@@ -481,6 +481,12 @@ def create_mcp_server(app=None):
             r.raise_for_status()
             return r
 
+    async def _api_post_json(path: str, payload: dict):
+        async with _client(30) as c:
+            r = await c.post(path, json=payload)
+            r.raise_for_status()
+            return r.json()
+
     # ── Tools ───────────────────────────────────────────────────────────
 
     def _current_client_id() -> str | None:
@@ -741,6 +747,106 @@ def create_mcp_server(app=None):
             # Transport failures + non-JSON success bodies (proxy error page).
             return json.dumps({"error": f"backend request failed: {exc}"})
         return json.dumps({"profile_id": p["id"], "name": p["name"], "kind": p["kind"]})
+
+    @mcp.tool()
+    async def describe_voice(description: str) -> str:
+        """Preview how a voice description maps onto voice-design attributes.
+
+        Nothing is saved. Use this before design_voice to see what the
+        description will produce. The design space is small and fixed; only
+        these tokens (and close synonyms) are understood:
+          Gender: male, female
+          Age: child, teenager, young adult, middle-aged, elderly
+          Pitch: very low / low / moderate / high / very high pitch
+          Style: whisper
+          EnglishAccent: american, british, australian, canadian, indian,
+            japanese, korean, chinese, russian, portuguese accent
+        Timbre words ("gravelly", "raspy") and other accents are ignored and
+        reported in `unmatched`. For a voice outside this space, use
+        clone_voice with reference audio instead.
+
+        Args:
+            description: Free-text description, e.g. "an elderly man with a
+                deep voice and a british accent".
+
+        Returns:
+            JSON with attrs (category → token or "Auto"), instruct, matched
+            and unmatched.
+        """
+        import httpx
+        try:
+            parsed = await _api_post_json("/design/describe", {"description": description})
+        except (httpx.HTTPError, ValueError) as exc:
+            return json.dumps({"error": f"backend request failed: {exc}"})
+        return json.dumps(parsed)
+
+    @mcp.tool()
+    async def design_voice(
+        name: str,
+        description: str,
+        language: str = "Auto",
+        personality: str = "",
+    ) -> str:
+        """Design and save a new voice profile from a text description.
+
+        The description is mapped onto the same attributes describe_voice
+        previews (see its docstring for the vocabulary). The backend renders a
+        fixed-seed sample and stores it as the voice's reference, so the saved
+        voice sounds the same on every later generate_speech call. Pass the
+        returned profile_id to generate_speech. Refuses a description that
+        matches no attribute at all.
+
+        Args:
+            name: A human-friendly name for the new voice.
+            description: Free-text description of the voice.
+            language: Language of the sample render (ISO code or 'Auto').
+            personality: Optional personality preset name (see
+                list_personalities).
+
+        Returns:
+            JSON with the new profile's id, name, kind, the attrs used, and
+            any unmatched description fragments.
+        """
+        import httpx
+        try:
+            parsed = await _api_post_json("/design/describe", {"description": description})
+        except (httpx.HTTPError, ValueError) as exc:
+            return json.dumps({"error": f"backend request failed: {exc}"})
+        if not parsed.get("matched"):
+            return json.dumps({
+                "error": "description matched no design attribute; see "
+                         "describe_voice for the vocabulary",
+                "unmatched": parsed.get("unmatched", []),
+            })
+        try:
+            r = await _api_post_form(
+                "/profiles",
+                data={
+                    "name": name,
+                    "kind": "design",
+                    "vd_states": json.dumps(parsed["attrs"]),
+                    "instruct": parsed.get("instruct", ""),
+                    "language": language,
+                    "personality": personality,
+                },
+            )
+            p = r.json()
+        except httpx.HTTPStatusError as exc:
+            try:
+                detail = exc.response.json().get("detail")
+            except ValueError:
+                detail = None
+            return json.dumps({"error": str(detail or exc.response.text
+                                             or f"HTTP {exc.response.status_code}")})
+        except (httpx.HTTPError, ValueError) as exc:
+            return json.dumps({"error": f"backend request failed: {exc}"})
+        return json.dumps({
+            "profile_id": p["id"],
+            "name": p["name"],
+            "kind": p["kind"],
+            "attrs": parsed["attrs"],
+            "unmatched": parsed.get("unmatched", []),
+        })
 
     return mcp
 
