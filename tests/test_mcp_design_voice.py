@@ -20,7 +20,7 @@ pytest.importorskip("mcp")
 
 
 def _stub_app(received: list):
-    from fastapi import FastAPI, Form
+    from fastapi import FastAPI, Form, Request, Response
 
     from api.routers.describe_voice import router as describe_router
 
@@ -34,13 +34,18 @@ def _stub_app(received: list):
         vd_states: str = Form(""),
         instruct: str = Form(""),
         language: str = Form("Auto"),
-        personality: str = Form(""),
     ):
         received.append({
             "name": name, "kind": kind, "vd_states": vd_states,
-            "instruct": instruct, "language": language, "personality": personality,
+            "instruct": instruct, "language": language,
         })
         return {"id": "abcd1234", "name": name, "kind": kind}
+
+    @app.post("/generate")
+    async def generate(request: Request):
+        form = await request.form()
+        received.append({"generate": dict(form)})
+        return Response(b"RIFF", media_type="audio/wav", headers={"X-Audio-Id": "a1"})
 
     return app
 
@@ -98,3 +103,30 @@ def test_design_voice_refuses_a_description_with_no_attributes(server):
     assert "error" in out
     assert out["unmatched"] == ["gravelly"]
     assert received == []
+
+
+def test_design_voice_save_waits_as_long_as_a_generation(server, monkeypatch):
+    # The save renders the identity sample through the GPU queue; the default
+    # 120 s POST deadline could give up while the profile still gets saved.
+    import mcp_server
+
+    kinds = []
+    real = mcp_server._post_timeout_s
+    monkeypatch.setattr(mcp_server, "_post_timeout_s",
+                        lambda kind="", text="": kinds.append(kind) or real(kind, text))
+    mcp, _ = server
+    _call(mcp, "design_voice", {"name": "Guard", "description": "a young man"})
+    assert "generate" in kinds
+
+
+@pytest.mark.parametrize("language, expected", [(None, None), ("Auto", "Auto"), ("fr", "fr")])
+def test_generate_speech_leaves_language_to_the_profile_unless_given(server, language, expected):
+    # An explicit "Auto" makes the backend ignore a profile's saved language
+    # (#533), so an omitted language must stay omitted.
+    mcp, received = server
+    args = {"text": "Hello there.", "profile_id": "abcd1234"}
+    if language is not None:
+        args["language"] = language
+    asyncio.run(mcp.call_tool("generate_speech", args))
+    (entry,) = [r["generate"] for r in received if "generate" in r]
+    assert entry.get("language") == expected
