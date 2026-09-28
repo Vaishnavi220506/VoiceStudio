@@ -26,6 +26,7 @@ metadata and the backend fallback mirror it.
 
 ### Added
 
+- Dictation vocabulary hint in Settings → Dictation shortcut: names and jargon that Faster Whisper, MLX Whisper and OpenAI-compatible engines should expect (#2395)
 - Run local narration, transcription, translation and voice-conversion recipes with resumable steps and WAV/TXT exports (#2333)
 
 - Call agent backend: place or answer phone calls that hold a task conversation in your verified or designed voice, with an editable AI disclosure, take-over and an after-call summary (#2306)
