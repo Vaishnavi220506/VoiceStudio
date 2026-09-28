@@ -350,6 +350,23 @@ def preflight():
         "detail": f"{os_ver} ({arch})", "fix": None,
     })
 
+    # ── Intel-Mac platform gate (#2365): PyTorch ships no macOS x86_64
+    # wheels, so the dependency set can never resolve there (see #889 and
+    # docs/install/macos.md). Fail the preflight BEFORE any multi-GB
+    # download so first-run setup shows this guidance instead of a raw
+    # uv resolver error. Local inference stays unsupported; the Electron
+    # UI can use a remote backend on another supported machine.
+    if sys.platform == "darwin" and arch == "x86_64":
+        checks.append({
+            "id": "platform", "label": "Platform support", "status": "fail",
+            "detail": "Intel Macs can't run the local AI backend "
+                      "(PyTorch ships no macOS x86_64 wheels).",
+            "fix": "Use a remote backend on a supported machine "
+                   "(Apple Silicon, NVIDIA, or CPU-only Linux/Windows) — "
+                   "see docs/install/macos.md. Local setup is disabled "
+                   "on this host.",
+        })
+
     # ── Python runtime
     checks.append({
         "id": "python", "label": "Python runtime", "status": "pass",
