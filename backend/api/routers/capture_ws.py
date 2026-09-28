@@ -1160,10 +1160,13 @@ async def _transcribe_buffer(chunks: list[bytes], *, pcm_sr: int | None = None) 
     try:
         from services.model_manager import _gpu_pool
         from services.asr_backend import get_capture_asr_backend, run_transcribe_guarded
+        from api.routers.dictation import dictation_transcribe_kwargs
 
         def _run():
             backend = get_capture_asr_backend()
-            result = backend.transcribe(tmp, word_timestamps=False)
+            result = backend.transcribe(
+                tmp, word_timestamps=False, **dictation_transcribe_kwargs(backend),
+            )
             return _result_text(result)
 
         # Bound dictation transcribes (#730): a wedged whisperx/CTranslate2 call
@@ -1190,11 +1193,14 @@ async def _transcribe_buffer_full(
     try:
         from services.model_manager import _gpu_pool
         from services.asr_backend import get_capture_asr_backend, run_transcribe_guarded
+        from api.routers.dictation import dictation_transcribe_kwargs
 
         def _run():
             backend = get_capture_asr_backend(skip_sherpa=skip_sherpa)
             t0 = time.perf_counter()
-            result = backend.transcribe(tmp, word_timestamps=False)
+            result = backend.transcribe(
+                tmp, word_timestamps=False, **dictation_transcribe_kwargs(backend),
+            )
             elapsed = round(time.perf_counter() - t0, 2)
 
             segments = result.get("segments", [])

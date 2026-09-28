@@ -2012,7 +2012,9 @@
     "mode_label": "Mode Dikte",
     "mode_sub": "Beralih: tekan sekali untuk memulai, sekali lagi untuk berhenti. Tahan: mendiktekan saat kunci dipegang.",
     "mode_toggle": "Beralih",
-    "mode_hold": "Tahan"
+    "mode_hold": "Tahan",
+    "prompt_label": "Petunjuk kosakata",
+    "prompt_sub": "Nama, istilah, dan ejaan yang diharapkan. Dipakai mesin dikte berbasis Whisper; mesin lain mengabaikannya."
   },
   "trimmer": {
     "title": "Pangkas audio referensi",

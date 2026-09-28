@@ -2012,7 +2012,9 @@
     "mode_label": "Dikte Modu",
     "mode_sub": "Geçiş: Başlatmak için bir kez, durdurmak için tekrar basın. Basılı tutun: tuş basılı tutulduğunda dikte edin.",
     "mode_toggle": "Değiştir",
-    "mode_hold": "Basılı tutun"
+    "mode_hold": "Basılı tutun",
+    "prompt_label": "Kelime ipucu",
+    "prompt_sub": "Beklenen adlar, terimler ve yazımlar. Whisper tabanlı dikte motorları kullanır; diğerleri yok sayar."
   },
   "trimmer": {
     "title": "Referans sesini kırp",

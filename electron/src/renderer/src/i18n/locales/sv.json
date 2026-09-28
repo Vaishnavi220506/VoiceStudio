@@ -2012,7 +2012,9 @@
     "mode_label": "Dikteringsläge",
     "mode_sub": "Växla: tryck en gång för att starta, igen för att stoppa. Håll: diktera medan tangenten hålls nedtryckt.",
     "mode_toggle": "Växla",
-    "mode_hold": "Vänta"
+    "mode_hold": "Vänta",
+    "prompt_label": "Ordförrådstips",
+    "prompt_sub": "Förväntade namn, fackord och stavningar. Används av Whisper-baserade dikteringsmotorer; andra ignorerar det."
   },
   "trimmer": {
     "title": "Trimma referensljud",

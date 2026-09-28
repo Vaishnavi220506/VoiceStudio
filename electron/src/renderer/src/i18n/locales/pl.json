@@ -2016,7 +2016,9 @@
     "mode_label": "Tryb dyktowania",
     "mode_sub": "Przełącz: naciśnij raz, aby rozpocząć, ponownie, aby zatrzymać. Przytrzymaj: dyktuj, gdy klawisz jest przytrzymywany.",
     "mode_toggle": "Przełącz",
-    "mode_hold": "Trzymaj"
+    "mode_hold": "Trzymaj",
+    "prompt_label": "Podpowiedź słownictwa",
+    "prompt_sub": "Oczekiwane nazwy, żargon i pisownia. Używana przez silniki dyktowania oparte na Whisper; pozostałe ją ignorują."
   },
   "trimmer": {
     "title": "Przytnij dźwięk referencyjny",

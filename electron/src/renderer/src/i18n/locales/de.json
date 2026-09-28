@@ -2012,7 +2012,9 @@
     "mode_label": "Diktiermodus",
     "mode_sub": "Umschalten: Einmal drücken, um zu starten, erneut drücken, um zu stoppen. Halten: Diktieren, während die Taste gedrückt gehalten wird.",
     "mode_toggle": "Umschalten",
-    "mode_hold": "Halt"
+    "mode_hold": "Halt",
+    "prompt_label": "Vokabelhinweis",
+    "prompt_sub": "Erwartete Namen, Fachbegriffe und Schreibweisen. Wird von Whisper-basierten Diktier-Engines genutzt; andere ignorieren ihn."
   },
   "trimmer": {
     "title": "Referenzaudio zuschneiden",

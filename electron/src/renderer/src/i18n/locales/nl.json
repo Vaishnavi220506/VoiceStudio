@@ -2012,7 +2012,9 @@
     "mode_label": "Dicteermodus",
     "mode_sub": "Schakelen: druk één keer om te starten, nogmaals om te stoppen. Vasthouden: dicteren terwijl de toets ingedrukt wordt gehouden.",
     "mode_toggle": "Schakel",
-    "mode_hold": "Houd vast"
+    "mode_hold": "Houd vast",
+    "prompt_label": "Woordenschathint",
+    "prompt_sub": "Verwachte namen, vaktermen en spellingen. Gebruikt door op Whisper gebaseerde dicteerengines; andere negeren het."
   },
   "trimmer": {
     "title": "Referentie-audio trimmen",

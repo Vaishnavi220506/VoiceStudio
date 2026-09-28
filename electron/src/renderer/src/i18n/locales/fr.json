@@ -2014,7 +2014,9 @@
     "mode_label": "Mode dictée",
     "mode_sub": "Basculer : appuyez une fois pour démarrer, une nouvelle fois pour arrêter. Maintenir : dicter pendant que la touche est maintenue.",
     "mode_toggle": "Basculer",
-    "mode_hold": "Tenir"
+    "mode_hold": "Tenir",
+    "prompt_label": "Indice de vocabulaire",
+    "prompt_sub": "Noms, jargon et orthographes attendus. Utilisé par les moteurs de dictée basés sur Whisper ; les autres l’ignorent."
   },
   "trimmer": {
     "title": "Couper l'audio de référence",

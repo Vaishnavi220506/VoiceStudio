@@ -2016,7 +2016,9 @@
     "mode_label": "听写模式",
     "mode_sub": "切换：按一次启动，再按一次停止。按住：按住按键时听写。",
     "mode_toggle": "切换",
-    "mode_hold": "按住"
+    "mode_hold": "按住",
+    "prompt_label": "词汇提示",
+    "prompt_sub": "预期会出现的人名、术语与写法。仅 Whisper 系列听写引擎会使用，其他引擎会忽略。"
   },
   "trimmer": {
     "title": "修剪参考音频",
