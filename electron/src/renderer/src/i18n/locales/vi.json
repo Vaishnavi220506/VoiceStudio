@@ -3047,7 +3047,14 @@
     "step_audio": "Clip nguồn",
     "step_transcribe": "Phiên âm",
     "step_translate": "Dịch",
-    "step_convert": "Chuyển đổi"
+    "step_convert": "Chuyển đổi",
+    "condition_phrase": "Văn bản cần tìm",
+    "condition_match": "Khớp",
+    "condition_hint": "Nhánh có chạy khi văn bản khớp; nếu không, nhánh không sẽ chạy. Không phân biệt hoa thường.",
+    "match_contains": "Chứa",
+    "match_equals": "Đúng bằng",
+    "match_starts": "Bắt đầu bằng",
+    "match_ends": "Kết thúc bằng"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3167,8 +3174,8 @@
     "progress": "{{done}} / {{total}} đoạn đã sẵn sàng",
     "changed": "Cài đặt đã thay đổi. Chạy lại sẽ tạo đầu ra mới.",
     "incomplete": "Giọng nói chưa đầy đủ. Thử lại trước khi xuất.",
-    "invalid_graph": "Nối mọi bước từ Bắt đầu đến Kết thúc, không phân nhánh hoặc tạo vòng lặp.",
-    "invalid_unsupported": "Các bước không tương thích: văn bản sang dịch hoặc đọc, âm thanh sang chép lời hoặc chuyển đổi, giọng tổng hợp sang chuẩn hóa.",
+    "invalid_graph": "Kết nối mọi bước từ Bắt đầu đến Kết thúc. Chỉ điều kiện mới được rẽ nhánh và không lộ trình nào được lặp vòng.",
+    "invalid_unsupported": "Các bước không tương thích: văn bản sang dịch hoặc đọc, âm thanh sang chép lời hoặc chuyển đổi, giọng tổng hợp sang chuẩn hóa. Các nhánh nhập lại phải mang cùng một loại giá trị.",
     "invalid_voice": "Chọn giọng đã lưu cho mỗi bước đọc hoặc chuyển đổi.",
     "invalid_scripts": "Thêm 1–50 kịch bản không trống, tối đa 20.000 ký tự mỗi kịch bản.",
     "peak": "Đỉnh (dBFS)",
@@ -3181,7 +3188,8 @@
     "transcription_recipe": "Âm thanh thành văn bản",
     "conversion_recipe": "Đổi giọng nói",
     "localization_recipe": "Dịch và thuyết minh",
-    "invalid_language": "Chọn ngôn ngữ nguồn và đích."
+    "invalid_language": "Chọn ngôn ngữ nguồn và đích.",
+    "invalid_condition": "Nhập văn bản mà điều kiện cần tìm."
   },
   "voiceSelector": {
     "designed": "Giọng nói được thiết kế",

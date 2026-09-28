@@ -3049,7 +3049,14 @@
     "step_audio": "Clip sorgente",
     "step_transcribe": "Trascrivi",
     "step_translate": "Traduci",
-    "step_convert": "Converti"
+    "step_convert": "Converti",
+    "condition_phrase": "Testo da cercare",
+    "condition_match": "Corrispondenza",
+    "condition_hint": "Il ramo «sì» viene eseguito quando il testo corrisponde, altrimenti il ramo «no». Le maiuscole non contano.",
+    "match_contains": "Contiene",
+    "match_equals": "È esattamente",
+    "match_starts": "Inizia con",
+    "match_ends": "Termina con"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} clip pronte",
     "changed": "Impostazioni modificate. Eseguire crea nuovi risultati.",
     "incomplete": "Voce incompleta. Riprova prima di esportare.",
-    "invalid_graph": "Collega tutti i passaggi dall’inizio alla fine senza diramazioni o cicli.",
-    "invalid_unsupported": "Passaggi incompatibili: testo verso traduzione o voce, audio verso trascrizione o conversione e voce generata verso normalizzazione.",
+    "invalid_graph": "Collega ogni passaggio da Inizio a Fine. Solo una condizione può ramificarsi e nessun percorso può formare un ciclo.",
+    "invalid_unsupported": "Passaggi incompatibili: testo verso traduzione o voce, audio verso trascrizione o conversione e voce generata verso normalizzazione. I rami che si ricongiungono devono portare lo stesso tipo di valore.",
     "invalid_voice": "Scegli una voce salvata per ogni passaggio di voce o conversione.",
     "invalid_scripts": "Aggiungi 1–50 testi non vuoti di massimo 20.000 caratteri ciascuno.",
     "peak": "Picco (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "Da audio a testo",
     "conversion_recipe": "Cambia voce",
     "localization_recipe": "Traduci e narra",
-    "invalid_language": "Scegli le lingue di origine e destinazione."
+    "invalid_language": "Scegli le lingue di origine e destinazione.",
+    "invalid_condition": "Inserisci il testo che la condizione deve cercare."
   },
   "voiceSelector": {
     "designed": "Voci progettate",

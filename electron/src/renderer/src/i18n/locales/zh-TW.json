@@ -3047,7 +3047,14 @@
     "step_audio": "來源音訊",
     "step_transcribe": "轉錄",
     "step_translate": "翻譯",
-    "step_convert": "轉換"
+    "step_convert": "轉換",
+    "condition_phrase": "要尋找的文字",
+    "condition_match": "比對方式",
+    "condition_hint": "文字相符時執行「是」分支，否則執行「否」分支。不分大小寫。",
+    "match_contains": "包含",
+    "match_equals": "完全等於",
+    "match_starts": "開頭為",
+    "match_ends": "結尾為"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3167,8 +3174,8 @@
     "progress": "{{done}} / {{total}} 個片段已就緒",
     "changed": "設定已變更。執行將產生新輸出。",
     "incomplete": "語音不完整。請在匯出前重試。",
-    "invalid_graph": "將所有步驟從開始連接到結束，不要分支或循環。",
-    "invalid_unsupported": "步驟不相容：文字連接翻譯或說話，音訊連接轉錄或轉換，合成語音連接正規化。",
+    "invalid_graph": "將從開始到結束的每個步驟連接起來。只有條件可以分支，且任何路徑都不能循環。",
+    "invalid_unsupported": "步驟不相容：文字連接翻譯或說話，音訊連接轉錄或轉換，合成語音連接正規化。 重新匯合的分支必須攜帶同一種值。",
     "invalid_voice": "請為每個說話或轉換步驟選擇已儲存的聲音。",
     "invalid_scripts": "新增 1–50 個非空腳本，每個最多 20,000 字元。",
     "peak": "峰值 (dBFS)",
@@ -3181,7 +3188,8 @@
     "transcription_recipe": "音訊轉文字",
     "conversion_recipe": "更換聲音",
     "localization_recipe": "翻譯並配音",
-    "invalid_language": "請選擇來源語言和目標語言。"
+    "invalid_language": "請選擇來源語言和目標語言。",
+    "invalid_condition": "請輸入條件要尋找的文字。"
   },
   "voiceSelector": {
     "designed": "設計的聲音",
