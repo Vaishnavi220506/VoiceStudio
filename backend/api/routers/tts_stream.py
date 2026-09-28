@@ -46,17 +46,20 @@ async def _resolve_stream_backend(engine_id: str | None):
         active_backend_id,
         get_active_tts_backend,
         get_backend_class,
+        get_engine_instance_for,
     )
+    from services.engine_memory import evict_other_tts_engines
 
-    if engine_id:
-        return get_backend_class(engine_id)()
-
-    cls = get_backend_class(active_backend_id())
+    selected_id = engine_id or active_backend_id()
+    cls = get_backend_class(selected_id)
+    await evict_other_tts_engines(selected_id)
     if cls is OmniVoiceBackend:
         from services.model_manager import get_model
 
-        return get_active_tts_backend(model=await get_model())
-    return get_active_tts_backend()
+        model = await get_model()
+        # An explicit override must not resolve the configured active engine.
+        return OmniVoiceBackend(model=model) if engine_id else get_active_tts_backend(model=model)
+    return get_engine_instance_for(selected_id) if engine_id else get_active_tts_backend()
 
 
 class StreamTTSRequest(BaseModel):
