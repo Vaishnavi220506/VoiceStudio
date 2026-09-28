@@ -638,7 +638,17 @@ async def dub_generate(job_id: str, req: DubRequest):
         def _load_entry_wav(entry, target_sr: int) -> torch.Tensor:
             if isinstance(entry[2], torch.Tensor):
                 return entry[2]
-            wav, loaded_sr = torchaudio.load(entry[2])
+            try:
+                wav, loaded_sr = torchaudio.load(entry[2])
+            except ImportError:
+                # torchaudio 2.9 routes load() through TorchCodec; when that
+                # wheel is missing/broken on Windows, fall back to soundfile
+                # (segments here are always plain PCM WAV written by the
+                # sibling soundfile save path).
+                import soundfile as sf
+
+                data, loaded_sr = sf.read(entry[2], dtype="float32", always_2d=True)
+                wav = torch.from_numpy(data.T)
             if loaded_sr != target_sr:
                 import torchaudio.functional as AF
                 wav = AF.resample(wav, loaded_sr, target_sr)
