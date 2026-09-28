@@ -1,11 +1,11 @@
-"""Streaming overrides reuse the shared engine cache and evict on switches."""
+"""Streaming overrides reuse cached engines without unloading concurrent streams."""
 from __future__ import annotations
 
 import asyncio
 import os
 import sys
-from types import ModuleType
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 
@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
 @pytest.fixture()
 def engines(monkeypatch):
-    from services import engine_memory, tts_backend
+    from services import tts_backend
 
     class First:
         id = "first-test"
@@ -40,12 +40,10 @@ def engines(monkeypatch):
     fake_router = ModuleType("api.routers.engines")
     fake_router._ENGINE_INSTANCES = tts_backend._ENGINE_INSTANCES
     monkeypatch.setitem(sys.modules, "api.routers.engines", fake_router)
-    monkeypatch.setattr(engine_memory, "single_engine_resident", lambda: True)
-    monkeypatch.setattr("services.model_manager.unload_shared_model", lambda: False)
     yield First, Second, tts_backend._ENGINE_INSTANCES
 
 
-def test_stream_overrides_reuse_and_switch(engines):
+def test_stream_overrides_reuse_without_evicting_other_streams(engines):
     from api.routers.tts_stream import _resolve_stream_backend
 
     first_cls, second_cls, cache = engines
@@ -59,16 +57,16 @@ def test_stream_overrides_reuse_and_switch(engines):
 
         second = await _resolve_stream_backend("second-test")
         assert second_cls.created == 1
-        assert first_cls.unloaded == 1
-        assert first_cls not in cache
+        assert first_cls.unloaded == 0
+        assert cache[first_cls] is first
         assert cache[second_cls] is second
 
         back = await _resolve_stream_backend("first-test")
-        assert back is not first
-        assert first_cls.created == 2
-        assert second_cls.unloaded == 1
-        assert cache[first_cls] is back
-        assert second_cls not in cache
+        assert back is first
+        assert first_cls.created == 1
+        assert second_cls.unloaded == 0
+        assert cache[first_cls] is first
+        assert cache[second_cls] is second
 
     asyncio.run(run())
 
@@ -85,3 +83,77 @@ def test_stream_without_override_keeps_active_backend_path(engines, monkeypatch)
     assert asyncio.run(_resolve_stream_backend(None)) is active
     assert first_cls.created == 0  # no explicit override instance was made
     assert not cache
+
+
+def test_stream_override_does_not_unload_separate_active_engine(engines, monkeypatch):
+    from api.routers.tts_stream import _resolve_stream_backend
+    from services import tts_backend
+
+    first_cls, second_cls, cache = engines
+    active = first_cls()
+    monkeypatch.setattr(tts_backend, "_active_instance", active)
+    monkeypatch.setattr(tts_backend, "_active_instance_id", first_cls.id)
+
+    selected = asyncio.run(_resolve_stream_backend(second_cls.id))
+
+    assert selected is cache[second_cls]
+    assert first_cls.unloaded == 0
+    assert tts_backend._active_instance is active
+    assert tts_backend._active_instance_id == first_cls.id
+
+
+def test_stream_override_reuses_matching_active_instance(engines, monkeypatch):
+    from api.routers.tts_stream import _resolve_stream_backend
+    from services import tts_backend
+
+    first_cls, _, cache = engines
+    active = first_cls()
+    monkeypatch.setattr(tts_backend, "_active_instance", active)
+    monkeypatch.setattr(tts_backend, "_active_instance_id", first_cls.id)
+
+    selected = asyncio.run(_resolve_stream_backend(first_cls.id))
+
+    assert selected is active
+    assert first_cls.created == 1
+    assert first_cls.unloaded == 0
+    assert not cache  # do not create a duplicate instance in the other cache
+
+
+def test_explicit_omnivoice_override_keeps_lazy_core_path(engines, monkeypatch):
+    from api.routers.tts_stream import _resolve_stream_backend
+    from services import model_manager, tts_backend
+
+    class FakeOmni:
+        id = "omnivoice"
+        constructed = 0
+
+        def __init__(self):
+            type(self).constructed += 1
+
+    monkeypatch.setitem(tts_backend._REGISTRY, "omnivoice", FakeOmni)
+    monkeypatch.setattr(tts_backend, "OmniVoiceBackend", FakeOmni)
+
+    async def unexpected_model_load():
+        pytest.fail("explicit OmniVoice override should load lazily")
+
+    monkeypatch.setattr(model_manager, "get_model", unexpected_model_load)
+    assert isinstance(asyncio.run(_resolve_stream_backend("omnivoice")), FakeOmni)
+    assert FakeOmni.constructed == 1
+
+
+def test_resolver_does_not_invoke_eviction_during_another_stream(engines, monkeypatch):
+    from api.routers.tts_stream import _resolve_stream_backend
+    from services import engine_memory
+
+    first_cls, second_cls, cache = engines
+    first = asyncio.run(_resolve_stream_backend(first_cls.id))
+
+    async def unexpected_eviction(_selected_id):
+        pytest.fail("stream resolver must not unload another socket's backend")
+
+    monkeypatch.setattr(engine_memory, "evict_other_tts_engines", unexpected_eviction)
+    second = asyncio.run(_resolve_stream_backend(second_cls.id))
+
+    assert cache[first_cls] is first
+    assert cache[second_cls] is second
+    assert first_cls.unloaded == 0

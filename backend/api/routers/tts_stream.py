@@ -41,25 +41,29 @@ _perf_counter = time.perf_counter
 
 async def _resolve_stream_backend(engine_id: str | None):
     """Resolve the live-stream engine without bypassing host isolation."""
-    from services.tts_backend import (
-        OmniVoiceBackend,
-        active_backend_id,
-        get_active_tts_backend,
-        get_backend_class,
-        get_engine_instance_for,
-    )
-    from services.engine_memory import evict_other_tts_engines
+    import services.tts_backend as tts_backend
 
-    selected_id = engine_id or active_backend_id()
-    cls = get_backend_class(selected_id)
-    await evict_other_tts_engines(selected_id)
-    if cls is OmniVoiceBackend:
+    selected_id = engine_id or tts_backend.active_backend_id()
+    cls = tts_backend.get_backend_class(selected_id)
+    if cls is tts_backend.OmniVoiceBackend:
+        if engine_id:
+            # Preserve the explicit core override path; the shared model is
+            # loaded on demand by OmniVoiceBackend, not cached as a sidecar.
+            return cls()
         from services.model_manager import get_model
 
-        model = await get_model()
-        # An explicit override must not resolve the configured active engine.
-        return OmniVoiceBackend(model=model) if engine_id else get_active_tts_backend(model=model)
-    return get_engine_instance_for(selected_id) if engine_id else get_active_tts_backend()
+        return tts_backend.get_active_tts_backend(model=await get_model())
+    if not engine_id:
+        return tts_backend.get_active_tts_backend()
+    # The configured backend is cached separately from explicit overrides.
+    # Reuse it when the ids match rather than constructing a second instance.
+    # Never evict here: another socket can still hold a backend across chunks.
+    if (
+        tts_backend._active_instance_id == selected_id
+        and isinstance(tts_backend._active_instance, cls)
+    ):
+        return tts_backend._active_instance
+    return tts_backend.get_engine_instance_for(selected_id)
 
 
 class StreamTTSRequest(BaseModel):
