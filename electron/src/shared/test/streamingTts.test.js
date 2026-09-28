@@ -55,9 +55,16 @@ class FakeSource {
 }
 class FakeAudioContext {
   static instances = [];
-  constructor() {
+  static constructorArgs = [];
+  static rejectSampleRate = false;
+  constructor(options) {
+    FakeAudioContext.constructorArgs.push(options);
+    if (FakeAudioContext.rejectSampleRate && options?.sampleRate) {
+      throw new Error('unsupported sample rate');
+    }
     this.currentTime = 0;
     this.state = 'running';
+    this.sampleRate = options?.sampleRate ?? 48000;
     this.destination = {};
     this.started = []; // every source that called start()
     FakeAudioContext.instances.push(this);
@@ -142,6 +149,8 @@ const ndjsonResponse = (events, headers = {}) => {
 
 beforeEach(() => {
   FakeAudioContext.instances = [];
+  FakeAudioContext.constructorArgs = [];
+  FakeAudioContext.rejectSampleRate = false;
   window.AudioContext = FakeAudioContext;
   apiFetch.mockReset();
 });
@@ -199,8 +208,9 @@ describe('createStreamingChunkPlayer.appendPcm16Bytes', () => {
     player.appendPcm16Bytes(frame.buffer);
 
     expect(ctx.started.length).toBe(2);
-    // Second chunk starts exactly one chunk-duration later — gapless.
-    expect(ctx.started[1].startedAt.when).toBeCloseTo(2400 / 24000, 5);
+    // Both chunks keep their 80 ms scheduling lead and remain gapless.
+    expect(ctx.started[0].startedAt.when).toBeCloseTo(0.08, 5);
+    expect(ctx.started[1].startedAt.when).toBeCloseTo(0.08 + 2400 / 24000, 5);
     player.fail();
   });
 });
@@ -523,6 +533,54 @@ describe('streamGenerateSpeech', () => {
 // ── createStreamingChunkPlayer transport ────────────────────────────────────
 
 describe('createStreamingChunkPlayer', () => {
+  it('opens at the PCM rate and falls back when that rate is unsupported', () => {
+    let player = createStreamingChunkPlayer({ label: 'x', sampleRate: 24000 });
+    expect(FakeAudioContext.constructorArgs).toEqual([{ sampleRate: 24000 }]);
+    expect(FakeAudioContext.instances[0].sampleRate).toBe(24000);
+    player.fail();
+
+    FakeAudioContext.constructorArgs = [];
+    FakeAudioContext.instances = [];
+    FakeAudioContext.rejectSampleRate = true;
+    player = createStreamingChunkPlayer({ label: 'x', sampleRate: 24000 });
+    expect(FakeAudioContext.constructorArgs).toEqual([{ sampleRate: 24000 }, undefined]);
+    expect(FakeAudioContext.instances[0].sampleRate).toBe(48000);
+    player.fail();
+  });
+
+  it('anchors the first chunk and waits past its scheduled end before disconnecting', () => {
+    vi.useFakeTimers();
+    try {
+      const onDone = vi.fn();
+      const player = createStreamingChunkPlayer({
+        label: 'x',
+        sampleRate: 24000,
+        onDone,
+      });
+      const ctx = FakeAudioContext.instances[0];
+      ctx.currentTime = 0.5; // the stream's first chunk arrived after context creation
+      player.appendPcm16Base64(b64Pcm(Array.from({ length: 24000 }, () => 1000)));
+      player.finalize();
+
+      const source = ctx.started[0];
+      expect(source.startedAt.when).toBeCloseTo(0.58, 3);
+      expect(getPlaybackTrack().currentTime).toBe(0);
+
+      ctx.currentTime = 1.58; // the scheduled buffer has just reached its end
+      vi.advanceTimersByTime(250);
+      expect(source.stopped).toBeUndefined();
+      expect(onDone).not.toHaveBeenCalled();
+
+      ctx.currentTime = 1.64; // allow the output renderer to drain the tail
+      vi.advanceTimersByTime(250);
+      expect(onDone).toHaveBeenCalledWith('ended');
+      expect(source.stopped).toBeUndefined();
+      expect(player.stopped).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('supports seek within the buffered region (reschedules from the target)', () => {
     const player = createStreamingChunkPlayer({
       label: 'x',

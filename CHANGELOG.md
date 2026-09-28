@@ -58,6 +58,7 @@ metadata and the backend fallback mirror it.
 
 ### Fixed
 
+- Streaming previews keep the first and last audio intact and use the PCM rate when supported (#2399) — thanks @Marcin-CCC!
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
