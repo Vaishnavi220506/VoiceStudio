@@ -94,6 +94,9 @@ def test_no_space_scripts_match_inside_a_sentence():
     assert apply_lexicon("我在北京工作", {"北京": "Beijing"}) == "我在Beijing工作"
     assert apply_lexicon("ฉันไปกรุงเทพวันนี้", {"กรุงเทพ": "Krung Thep"}) == \
         "ฉันไปKrung Thepวันนี้"
+    # The ideographic iteration mark repeats the kanji before it and is part of
+    # the word: a key ending in it matches inside a sentence too.
+    assert apply_lexicon("色々試す", {"色々": "いろいろ"}) == "いろいろ試す"
     # Spaced scripts keep their boundaries.
     assert apply_lexicon("category of cat", {"cat": "kat"}) == "category of kat"
 
