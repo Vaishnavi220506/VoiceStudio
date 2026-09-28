@@ -40,24 +40,32 @@ _perf_counter = time.perf_counter
 
 
 async def _resolve_stream_backend(engine_id: str | None):
-    """Resolve the live-stream engine without bypassing host isolation."""
+    """Resolve the live-stream engine using the shared cached backend path."""
     from services.tts_backend import (
         OmniVoiceBackend,
         active_backend_id,
         get_active_tts_backend,
         get_backend_class,
+        get_engine_instance_for,
     )
 
     if engine_id:
-        return get_backend_class(engine_id)()
+        # Keep the single-engine memory policy used by the normal
+        # generation path and reuse the existing cached instance.
+        from services.engine_memory import evict_other_tts_engines
+
+        await evict_other_tts_engines(engine_id)
+
+        return get_engine_instance_for(engine_id)
 
     cls = get_backend_class(active_backend_id())
+
     if cls is OmniVoiceBackend:
         from services.model_manager import get_model
 
         return get_active_tts_backend(model=await get_model())
-    return get_active_tts_backend()
 
+    return get_active_tts_backend()
 
 class StreamTTSRequest(BaseModel):
     """Client request for streaming TTS."""
