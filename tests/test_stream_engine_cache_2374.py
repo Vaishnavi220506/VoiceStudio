@@ -157,3 +157,72 @@ def test_resolver_does_not_invoke_eviction_during_another_stream(engines, monkey
     assert cache[first_cls] is first
     assert cache[second_cls] is second
     assert first_cls.unloaded == 0
+
+@pytest.mark.parametrize("route_unavailable", [False, True])
+def test_websocket_holds_cached_engine_through_routing_and_releases_on_exit(
+    engines, monkeypatch, route_unavailable
+):
+    from api.routers.tts_stream import ws_tts
+    from services import tts_backend
+
+    first_cls, _, cache = engines
+    monkeypatch.setattr(tts_backend, "_ENGINE_LAST_USED", {})
+    monkeypatch.setattr(tts_backend, "_ENGINE_IN_USE", {})
+    entered = asyncio.Event()
+    resume = asyncio.Event()
+
+    class Socket:
+        received = 0
+        frames = []
+
+        async def accept(self):
+            pass
+
+        async def receive_json(self):
+            self.received += 1
+            if self.received == 1:
+                return {"text": "hello", "engine": first_cls.id}
+            from fastapi import WebSocketDisconnect
+
+            raise WebSocketDisconnect()
+
+        async def send_json(self, frame):
+            self.frames.append(frame)
+
+    device_caps = ModuleType("core.device_caps")
+    device_caps.detect_host_caps = lambda: object()
+    routing = ModuleType("services.engine_routing")
+
+    async def profile(backend, _caps):
+        entered.set()
+        await resume.wait()
+        return {
+            "routing_status": "unavailable" if route_unavailable else "accelerated",
+            "routing_reason": "unavailable",
+        }
+
+    routing.runtime_compute_profile_async = profile
+    routing.routing_notice = lambda _profile: None
+    monkeypatch.setitem(sys.modules, "core.device_caps", device_caps)
+    monkeypatch.setitem(sys.modules, "services.engine_routing", routing)
+
+    async def run():
+        socket = Socket()
+        task = asyncio.create_task(ws_tts(socket))
+        await asyncio.wait_for(entered.wait(), 2)
+        backend = cache[first_cls]
+        assert tts_backend._ENGINE_IN_USE[first_cls] == 1
+        assert tts_backend.release_idle_engines(idle_seconds=0, now=1e15) == []
+        assert first_cls.unloaded == 0
+        if route_unavailable:
+            resume.set()
+            await asyncio.wait_for(task, 2)
+            assert socket.frames[-1]["type"] == "error"
+        else:
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        assert not tts_backend._ENGINE_IN_USE
+        assert cache[first_cls] is backend
+
+    asyncio.run(run())

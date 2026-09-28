@@ -19,6 +19,7 @@ The chunked delivery targets <100ms time-to-first-audio (TTFA) on warm models.
 from __future__ import annotations
 
 import asyncio
+from contextlib import ExitStack
 import logging
 import os
 import time
@@ -225,14 +226,17 @@ async def synthesize_stream(
         raise StreamUnavailableError(
             scrub_text(routing["routing_reason"]) or "engine cannot run on this host"
         )
+    from services.tts_backend import engine_in_use
+
     kw = build_stream_kwargs({"voice": voice, "language": language})
-    for sentence in split_stream_sentences(text, language):
-        wav, sr, _synth_s = await run_on_gpu_pool_guarded(
-            functools.partial(render_stream_sentence, backend, kw, sentence),
-            what="TTS generate",
-            timeout=generate_timeout_s(sentence, engine=backend),
-        )
-        yield wav, sr
+    with engine_in_use(backend):
+        for sentence in split_stream_sentences(text, language):
+            wav, sr, _synth_s = await run_on_gpu_pool_guarded(
+                functools.partial(render_stream_sentence, backend, kw, sentence),
+                what="TTS generate",
+                timeout=generate_timeout_s(sentence, engine=backend),
+            )
+            yield wav, sr
 
 
 @router.websocket("/ws/tts")
@@ -309,6 +313,9 @@ async def ws_tts(websocket: WebSocket):
                         ),
                     })
 
+            # Close on every exit: normal completion, routing rejection,
+            # disconnect, generation failure or task cancellation.
+            engine_lease = ExitStack()
             try:
                 # Resolve engine
                 engine_id = data.get("engine")
@@ -327,6 +334,11 @@ async def ws_tts(websocket: WebSocket):
                 except Exception:
                     pass
                 backend = await _resolve_stream_backend(engine_id)
+                from services.tts_backend import engine_in_use
+
+                # The idle sweeper can run between sentence jobs and socket
+                # sends. Hold the cached instance for this whole request.
+                engine_lease.enter_context(engine_in_use(backend))
 
                 # ── Routing gate (#21 — no silent CPU fallback). WebSockets have
                 # no response headers, so this uses frames: an error frame +
@@ -475,6 +487,8 @@ async def ws_tts(websocket: WebSocket):
                     })
                 except Exception:
                     break
+            finally:
+                engine_lease.close()
 
     except WebSocketDisconnect:
         pass
