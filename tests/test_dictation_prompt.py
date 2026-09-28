@@ -73,6 +73,24 @@ def test_request_kwargs_follow_the_backend_signature():
     assert transcribe_request_kwargs(_SherpaLike(), opts) == {}
 
 
+@pytest.mark.parametrize("module,name", [
+    ("services.asr_backend", "FasterWhisperBackend"),
+    ("services.asr_backend", "MLXWhisperBackend"),
+    ("services.asr_backend", "OpenAICompatASRBackend"),
+    ("services.subprocess_asr", "IsolatedFasterWhisperBackend"),
+])
+def test_engines_named_in_the_settings_copy_declare_initial_prompt(module, name):
+    """Settings → Dictation shortcut tells users these engines use the hint.
+    The filter matches on the signature, so if one of them stops declaring
+    ``initial_prompt`` (e.g. collapses to ``**kwargs``) the hint would be
+    dropped silently while every stub-based test above stays green."""
+    import importlib
+    import inspect
+
+    cls = getattr(importlib.import_module(module), name)
+    assert "initial_prompt" in inspect.signature(cls.transcribe).parameters
+
+
 def test_prompt_kwargs_empty_until_a_prompt_is_saved(prompt_store):
     from api.routers import dictation as dr
 
