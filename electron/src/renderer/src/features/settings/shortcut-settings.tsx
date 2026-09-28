@@ -150,8 +150,12 @@ export function ShortcutSettings() {
             className="@2xl:w-80"
             maxLength={1000}
             value={prompt}
-            disabled={!prefs.data}
-            onChange={(event) => setPromptDraft(event.target.value)}
+            // Locked while saving: the save clears the draft, which would drop keystrokes.
+            disabled={busy || !prefs.data}
+            onChange={(event) => {
+              const value = event.target.value;
+              setPromptDraft(value === savedPrompt ? null : value);
+            }}
           />
           <Button
             size="sm"

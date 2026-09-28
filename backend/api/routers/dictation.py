@@ -16,9 +16,11 @@ namespace (``dictation.enabled``, ``dictation.mode``, ``dictation.model_id``,
 ``dictation.prompt``), mirroring how the ASR/TTS engine picks persist.
 
 ``prompt`` is an optional vocabulary hint (names, jargon, preferred script)
-handed to the capture engine as Whisper's ``initial_prompt``. Engines whose
-``transcribe()`` does not declare it (sherpa, CTC) never receive it, so an
-empty or unused prompt leaves dictation unchanged.
+handed to the capture engine as Whisper's ``initial_prompt`` on the live
+dictation socket and on ``/transcribe`` calls that pass ``dictation=true``.
+Engines whose ``transcribe()`` does not declare it (sherpa, WhisperX, PyTorch
+Whisper, CTC) never receive it, so an empty or unused prompt leaves dictation
+unchanged. The silent-model rescue decodes without it.
 """
 from __future__ import annotations
 
@@ -51,9 +53,11 @@ MAX_PROMPT_CHARS = 1000
 
 
 def dictation_prompt() -> str:
-    """The saved vocabulary prompt, or ``""`` when none is set."""
+    """The saved vocabulary prompt, or ``""`` when none is set. Bounded on
+    read too, so a hand-edited prefs.json cannot push an engine past its
+    own prompt limit."""
     value = prefs.get(PREF_PROMPT, "")
-    return value.strip() if isinstance(value, str) else ""
+    return value.strip()[:MAX_PROMPT_CHARS] if isinstance(value, str) else ""
 
 
 def dictation_transcribe_kwargs(backend) -> dict:

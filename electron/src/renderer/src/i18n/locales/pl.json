@@ -2018,7 +2018,7 @@
     "mode_toggle": "Przełącz",
     "mode_hold": "Trzymaj",
     "prompt_label": "Podpowiedź słownictwa",
-    "prompt_sub": "Oczekiwane nazwy, żargon i pisownia. Używana przez silniki dyktowania oparte na Whisper; pozostałe ją ignorują."
+    "prompt_sub": "Nazwy, żargon i pisownia oczekiwane podczas dyktowania. Używana przez Faster Whisper, MLX Whisper i silniki zgodne z OpenAI (wysyłana na ten serwer razem z dźwiękiem); pozostałe silniki ją ignorują."
   },
   "trimmer": {
     "title": "Przytnij dźwięk referencyjny",

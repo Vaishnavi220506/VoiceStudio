@@ -2014,7 +2014,7 @@
     "mode_toggle": "Beralih",
     "mode_hold": "Tahan",
     "prompt_label": "Petunjuk kosakata",
-    "prompt_sub": "Nama, istilah, dan ejaan yang diharapkan. Dipakai mesin dikte berbasis Whisper; mesin lain mengabaikannya."
+    "prompt_sub": "Nama, istilah, dan ejaan yang diharapkan saat mendikte. Dipakai oleh Faster Whisper, MLX Whisper, dan mesin yang kompatibel dengan OpenAI (dikirim ke server tersebut bersama audio); mesin lain mengabaikannya."
   },
   "trimmer": {
     "title": "Pangkas audio referensi",

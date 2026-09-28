@@ -2014,7 +2014,7 @@
     "mode_toggle": "토글",
     "mode_hold": "길게 누르기",
     "prompt_label": "어휘 힌트",
-    "prompt_sub": "예상되는 이름, 전문 용어, 표기. Whisper 기반 받아쓰기 엔진만 사용하며 다른 엔진은 무시합니다."
+    "prompt_sub": "받아쓰기 중 예상되는 이름, 전문 용어, 표기. Faster Whisper, MLX Whisper, OpenAI 호환 엔진만 사용하며(오디오와 함께 해당 서버로 전송됨), 다른 엔진은 무시합니다."
   },
   "trimmer": {
     "title": "참조 오디오 다듬기",

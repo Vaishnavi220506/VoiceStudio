@@ -2016,7 +2016,7 @@
     "mode_toggle": "Attiva/disattiva",
     "mode_hold": "Tieni",
     "prompt_label": "Suggerimento lessicale",
-    "prompt_sub": "Nomi, gergo e grafie attesi. Usato dai motori di dettatura basati su Whisper; gli altri lo ignorano."
+    "prompt_sub": "Nomi, gergo e grafie attesi durante la dettatura. Usato da Faster Whisper, MLX Whisper e dai motori compatibili con OpenAI (inviato a quel server insieme all’audio); gli altri motori lo ignorano."
   },
   "trimmer": {
     "title": "Taglia l'audio di riferimento",

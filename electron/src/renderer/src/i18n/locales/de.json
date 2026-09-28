@@ -2014,7 +2014,7 @@
     "mode_toggle": "Umschalten",
     "mode_hold": "Halt",
     "prompt_label": "Vokabelhinweis",
-    "prompt_sub": "Erwartete Namen, Fachbegriffe und Schreibweisen. Wird von Whisper-basierten Diktier-Engines genutzt; andere ignorieren ihn."
+    "prompt_sub": "Beim Diktieren erwartete Namen, Fachbegriffe und Schreibweisen. Wird von Faster Whisper, MLX Whisper und OpenAI-kompatiblen Engines genutzt (zusammen mit dem Audio an diesen Server gesendet); andere Engines ignorieren ihn."
   },
   "trimmer": {
     "title": "Referenzaudio zuschneiden",

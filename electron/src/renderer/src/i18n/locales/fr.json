@@ -2016,7 +2016,7 @@
     "mode_toggle": "Basculer",
     "mode_hold": "Tenir",
     "prompt_label": "Indice de vocabulaire",
-    "prompt_sub": "Noms, jargon et orthographes attendus. Utilisé par les moteurs de dictée basés sur Whisper ; les autres l’ignorent."
+    "prompt_sub": "Noms, jargon et orthographes attendus pendant la dictée. Utilisé par Faster Whisper, MLX Whisper et les moteurs compatibles OpenAI (envoyé à ce serveur avec l’audio) ; les autres moteurs l’ignorent."
   },
   "trimmer": {
     "title": "Couper l'audio de référence",

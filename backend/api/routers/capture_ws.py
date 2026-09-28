@@ -1184,7 +1184,12 @@ async def _transcribe_buffer(chunks: list[bytes], *, pcm_sr: int | None = None) 
 async def _transcribe_buffer_full(
     chunks: list[bytes], *, pcm_sr: int | None = None, skip_sherpa: bool = False,
 ) -> dict:
-    """Full transcription with timing info for the final result."""
+    """Full transcription with timing info for the final result.
+
+    ``skip_sherpa`` is the silent-model rescue: its text decides whether a
+    sherpa model is demoted, so it decodes without the vocabulary prompt
+    (Whisper can echo a prompt on noise) and must come from the audio alone.
+    """
     tmp = _pcm16_to_wav(b"".join(chunks), pcm_sr) if pcm_sr else _chunks_to_wav(chunks)
     if tmp is None:
         return {"text": "", "segments": [], "language": "unknown",
@@ -1197,10 +1202,9 @@ async def _transcribe_buffer_full(
 
         def _run():
             backend = get_capture_asr_backend(skip_sherpa=skip_sherpa)
+            prompt_kwargs = {} if skip_sherpa else dictation_transcribe_kwargs(backend)
             t0 = time.perf_counter()
-            result = backend.transcribe(
-                tmp, word_timestamps=False, **dictation_transcribe_kwargs(backend),
-            )
+            result = backend.transcribe(tmp, word_timestamps=False, **prompt_kwargs)
             elapsed = round(time.perf_counter() - t0, 2)
 
             segments = result.get("segments", [])

@@ -2014,7 +2014,7 @@
     "mode_toggle": "Chuyển đổi",
     "mode_hold": "Giữ",
     "prompt_label": "Gợi ý từ vựng",
-    "prompt_sub": "Tên riêng, thuật ngữ và cách viết dự kiến. Các công cụ đọc chính tả dựa trên Whisper sẽ dùng; công cụ khác bỏ qua."
+    "prompt_sub": "Tên riêng, thuật ngữ và cách viết dự kiến khi đọc chính tả. Faster Whisper, MLX Whisper và các công cụ tương thích OpenAI sẽ dùng (gửi đến máy chủ đó cùng âm thanh); các công cụ khác bỏ qua."
   },
   "trimmer": {
     "title": "Cắt âm thanh tham chiếu",

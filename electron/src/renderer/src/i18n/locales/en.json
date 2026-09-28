@@ -2088,7 +2088,7 @@
     "mode_toggle": "Toggle",
     "mode_hold": "Hold",
     "prompt_label": "Vocabulary hint",
-    "prompt_sub": "Names, jargon, and spellings to expect. Used by Whisper-based dictation engines; others ignore it."
+    "prompt_sub": "Names, jargon and spellings to expect while dictating. Used by Faster Whisper, MLX Whisper and OpenAI-compatible engines (sent to that server with the audio); other engines ignore it."
   },
   "trimmer": {
     "title": "Trim reference audio",

@@ -7,8 +7,10 @@ Whisper-family capture engines (faster-whisper, MLX, the OpenAI-compatible
 backend) mis-hear names, jargon and code-switched terms without a prompt, and
 may answer in the wrong script for Chinese. The OpenAI-compatible route
 already forwarded ``prompt``; the hotkey dictation paths (live socket and
-REST ``/transcribe``) had no way to supply one. Sherpa/CTC engines cannot take
-a prompt and must never be handed one.
+REST ``/transcribe`` with ``dictation=true``) had no way to supply one.
+Sherpa/CTC engines cannot take a prompt and must never be handed one; file
+transcription, reference transcripts and the silent-model rescue stay
+unbiased.
 """
 import asyncio
 import os
@@ -87,6 +89,15 @@ def test_non_string_pref_is_ignored(prompt_store):
     assert dr.dictation_prompt() == ""
 
 
+def test_hand_edited_oversized_pref_is_bounded_on_read(prompt_store):
+    """The write path caps the prompt; a hand-edited prefs.json must not push
+    an engine past its own limit (the isolated sidecar rejects >4096 chars)."""
+    from api.routers import dictation as dr
+
+    prompt_store[dr.PREF_PROMPT] = "x" * 5000
+    assert len(dr.dictation_prompt()) == dr.MAX_PROMPT_CHARS
+
+
 # ── Live dictation socket ────────────────────────────────────────────────────
 
 @pytest.fixture
@@ -128,15 +139,32 @@ def test_socket_never_hands_prompt_to_sherpa(monkeypatch, prompt_store, inline_w
     assert backend.calls == 1
 
 
+def test_silent_model_rescue_decodes_without_prompt(monkeypatch, prompt_store, inline_ws):
+    """The rescue's text is the evidence for demoting a sherpa model; a
+    prompted Whisper can echo the prompt on noise and fake that evidence."""
+    from api.routers import dictation as dr
+
+    prompt_store[dr.PREF_PROMPT] = PROMPT
+    backend = _WhisperLike()
+    monkeypatch.setattr("services.asr_backend.get_capture_asr_backend", lambda **_k: backend)
+    asyncio.run(inline_ws._transcribe_buffer_full([b"\x00" * 4000], pcm_sr=16000, skip_sherpa=True))
+    assert backend.calls == [{"word_timestamps": False, "initial_prompt": None}]
+
+
 # ── REST /transcribe ─────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("mode,expected", [
-    ("fast", PROMPT),
-    ("accurate", PROMPT),
+@pytest.mark.parametrize("mode,dictation,expected", [
+    ("fast", "true", PROMPT),
+    ("accurate", "true", PROMPT),
+    # File transcription and MCP/CLI callers don't opt in: never biased.
+    ("fast", None, None),
+    ("accurate", None, None),
     # A voice-clone reference transcript must not be biased by dictation terms.
-    ("reference", None),
+    ("reference", "true", None),
 ])
-def test_rest_transcribe_applies_prompt_except_reference(monkeypatch, prompt_store, mode, expected):
+def test_rest_transcribe_applies_prompt_only_for_dictation(
+    monkeypatch, prompt_store, mode, dictation, expected,
+):
     from fastapi.testclient import TestClient
     from api.routers import dictation as dr
 
@@ -147,10 +175,13 @@ def test_rest_transcribe_applies_prompt_except_reference(monkeypatch, prompt_sto
 
     from main import app
     client = TestClient(app, client=("127.0.0.1", 50000))
+    data = {"mode": mode}
+    if dictation is not None:
+        data["dictation"] = dictation
     r = client.post(
         "/transcribe",
         files={"audio": ("a.wav", b"\x00" * 32000, "audio/wav")},
-        data={"mode": mode},
+        data=data,
     )
     assert r.status_code == 200, r.text
     assert [c["initial_prompt"] for c in backend.calls] == [expected]

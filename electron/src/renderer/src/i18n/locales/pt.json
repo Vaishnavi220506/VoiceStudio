@@ -2016,7 +2016,7 @@
     "mode_toggle": "Alternar",
     "mode_hold": "Espera",
     "prompt_label": "Dica de vocabulário",
-    "prompt_sub": "Nomes, jargões e grafias esperados. Usado pelos mecanismos de ditado baseados em Whisper; os demais o ignoram."
+    "prompt_sub": "Nomes, jargões e grafias esperados ao ditar. Usado pelo Faster Whisper, MLX Whisper e mecanismos compatíveis com OpenAI (enviado a esse servidor junto com o áudio); os demais mecanismos o ignoram."
   },
   "trimmer": {
     "title": "Cortar áudio de referência",

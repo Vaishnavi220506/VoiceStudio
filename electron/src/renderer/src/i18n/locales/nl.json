@@ -2014,7 +2014,7 @@
     "mode_toggle": "Schakel",
     "mode_hold": "Houd vast",
     "prompt_label": "Woordenschathint",
-    "prompt_sub": "Verwachte namen, vaktermen en spellingen. Gebruikt door op Whisper gebaseerde dicteerengines; andere negeren het."
+    "prompt_sub": "Verwachte namen, vaktermen en spellingen tijdens het dicteren. Gebruikt door Faster Whisper, MLX Whisper en OpenAI-compatibele engines (samen met de audio naar die server verzonden); andere engines negeren het."
   },
   "trimmer": {
     "title": "Referentie-audio trimmen",

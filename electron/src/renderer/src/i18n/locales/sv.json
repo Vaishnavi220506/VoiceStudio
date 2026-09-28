@@ -2014,7 +2014,7 @@
     "mode_toggle": "Växla",
     "mode_hold": "Vänta",
     "prompt_label": "Ordförrådstips",
-    "prompt_sub": "Förväntade namn, fackord och stavningar. Används av Whisper-baserade dikteringsmotorer; andra ignorerar det."
+    "prompt_sub": "Förväntade namn, fackord och stavningar vid diktering. Används av Faster Whisper, MLX Whisper och OpenAI-kompatibla motorer (skickas till den servern tillsammans med ljudet); andra motorer ignorerar det."
   },
   "trimmer": {
     "title": "Trimma referensljud",

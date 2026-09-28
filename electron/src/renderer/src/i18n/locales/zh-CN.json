@@ -2018,7 +2018,7 @@
     "mode_toggle": "切换",
     "mode_hold": "按住",
     "prompt_label": "词汇提示",
-    "prompt_sub": "预期会出现的人名、术语与写法。仅 Whisper 系列听写引擎会使用，其他引擎会忽略。"
+    "prompt_sub": "听写时预期会出现的人名、术语与写法。仅 Faster Whisper、MLX Whisper 与 OpenAI 兼容引擎会使用（会随音频发送到该服务器），其他引擎会忽略。"
   },
   "trimmer": {
     "title": "修剪参考音频",
