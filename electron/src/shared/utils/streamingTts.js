@@ -327,7 +327,7 @@ export const createStreamingChunkPlayer = ({ label, sampleRate, crossfadeMs = 0,
         // the buffered edge) instead of clipping its head.
         baseOffset = starts[i];
         anchor = ctx.currentTime + 0.02;
-        scheduleChunk(i, 0, false);
+        scheduleChunk(i, 0, true);
       } else {
         scheduleChunk(i);
       }

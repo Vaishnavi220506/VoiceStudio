@@ -581,6 +581,33 @@ describe('createStreamingChunkPlayer', () => {
     }
   });
 
+  it('preserves the crossfade when a late chunk is re-anchored', () => {
+    const ramp = vi.spyOn(FakeGainParam.prototype, 'linearRampToValueAtTime');
+    const player = createStreamingChunkPlayer({
+      label: 'x',
+      sampleRate: 24000,
+      crossfadeMs: 50,
+    });
+    try {
+      const ctx = FakeAudioContext.instances[0];
+      player.appendPcm16Base64(chunkEvent(0).pcm);
+
+      // The first 100 ms chunk is still playing when the next chunk arrives,
+      // but its planned start has passed and must be re-anchored.
+      ctx.currentTime = 0.15;
+      player.appendPcm16Base64(chunkEvent(1).pcm);
+
+      expect(ctx.started[1].startedAt.when).toBeCloseTo(0.17, 5);
+      expect(ramp).toHaveBeenCalledTimes(2);
+      expect(ramp.mock.calls.map(([target]) => target)).toEqual([0, 1]);
+      expect(ramp.mock.calls[0][1]).toBeCloseTo(0.22, 5);
+      expect(ramp.mock.calls[1][1]).toBeCloseTo(0.22, 5);
+    } finally {
+      player.fail();
+      ramp.mockRestore();
+    }
+  });
+
   it('supports seek within the buffered region (reschedules from the target)', () => {
     const player = createStreamingChunkPlayer({
       label: 'x',
