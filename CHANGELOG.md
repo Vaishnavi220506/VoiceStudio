@@ -58,6 +58,7 @@ metadata and the backend fallback mirror it.
 
 ### Fixed
 
+- Installed performance packs can be activated when all required models are present, even below the download-space reserve (#2386)
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
