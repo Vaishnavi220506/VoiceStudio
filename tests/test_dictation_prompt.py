@@ -9,8 +9,8 @@ may answer in the wrong script for Chinese. The OpenAI-compatible route
 already forwarded ``prompt``; the hotkey dictation paths (live socket and
 REST ``/transcribe`` with ``dictation=true``) had no way to supply one.
 Sherpa/CTC engines cannot take a prompt and must never be handed one; file
-transcription, reference transcripts and the silent-model rescue stay
-unbiased.
+transcription, reference transcripts, the phone-call agent, the public
+streaming API and the silent-model rescue stay unbiased.
 """
 import asyncio
 import os
@@ -141,8 +141,22 @@ def test_socket_passes_prompt_to_whisper_engines(monkeypatch, prompt_store, inli
     backend = _WhisperLike()
     monkeypatch.setattr("services.asr_backend.get_capture_asr_backend", lambda **_k: backend)
     run = inline_ws._transcribe_buffer_full if final else inline_ws._transcribe_buffer
-    asyncio.run(run([b"\x00" * 4000], pcm_sr=16000))
+    asyncio.run(run([b"\x00" * 4000], pcm_sr=16000, dictation=True))
     assert backend.calls == [{"word_timestamps": False, "initial_prompt": PROMPT}]
+
+
+@pytest.mark.parametrize("final", [False, True])
+def test_socket_helpers_stay_unprompted_by_default(monkeypatch, prompt_store, inline_ws, final):
+    """The helpers are shared: the phone-call agent transcribes through
+    ``_transcribe_buffer`` too, and must not pick up dictation vocabulary."""
+    from api.routers import dictation as dr
+
+    prompt_store[dr.PREF_PROMPT] = PROMPT
+    backend = _WhisperLike()
+    monkeypatch.setattr("services.asr_backend.get_capture_asr_backend", lambda **_k: backend)
+    run = inline_ws._transcribe_buffer_full if final else inline_ws._transcribe_buffer
+    asyncio.run(run([b"\x00" * 4000], pcm_sr=16000))
+    assert backend.calls == [{"word_timestamps": False, "initial_prompt": None}]
 
 
 @pytest.mark.parametrize("final", [False, True])
@@ -153,8 +167,49 @@ def test_socket_never_hands_prompt_to_sherpa(monkeypatch, prompt_store, inline_w
     backend = _SherpaLike()
     monkeypatch.setattr("services.asr_backend.get_capture_asr_backend", lambda **_k: backend)
     run = inline_ws._transcribe_buffer_full if final else inline_ws._transcribe_buffer
-    asyncio.run(run([b"\x00" * 4000], pcm_sr=16000))  # TypeError if handed a prompt
+    asyncio.run(run([b"\x00" * 4000], pcm_sr=16000, dictation=True))  # TypeError if handed a prompt
     assert backend.calls == 1
+
+
+@pytest.mark.parametrize("path,expected", [
+    ("/ws/transcribe?pcm=1&sr=16000", True),
+    # The public streaming API shares the handler but is not dictation.
+    ("/v1/audio/transcriptions/stream?pcm=1&sr=16000", False),
+])
+def test_only_the_dictation_socket_opts_in(monkeypatch, path, expected):
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+    from api.routers import capture_ws as cw
+
+    seen = []
+
+    async def fake_partial(_chunks, **kwargs):
+        seen.append(kwargs.get("dictation", False))
+        return ""
+
+    async def fake_full(_chunks, **kwargs):
+        seen.append(kwargs.get("dictation", False))
+        return {"text": "ok", "segments": [], "language": "en", "engine": "stub"}
+
+    monkeypatch.setattr(cw, "_transcribe_buffer", fake_partial)
+    monkeypatch.setattr(cw, "_transcribe_buffer_full", fake_full)
+    # Take the buffered (non-sherpa) path regardless of any dictation model a
+    # previous test left in prefs.
+    monkeypatch.setattr(cw, "_select_sherpa_spec", lambda _ws: None)
+    app = FastAPI()
+    app.include_router(cw.router)
+    client = TestClient(app, client=("127.0.0.1", 50000))
+
+    with client.websocket_connect(path) as websocket:
+        websocket.send_bytes(b"\x00" * 5000)
+        websocket.send_json({"type": "input_audio.end"})
+        for _ in range(10):
+            if websocket.receive_json().get("type") == "final":
+                break
+        else:
+            pytest.fail("no final frame")
+
+    assert seen and set(seen) == {expected}
 
 
 def test_silent_model_rescue_decodes_without_prompt(monkeypatch, prompt_store, inline_ws):
