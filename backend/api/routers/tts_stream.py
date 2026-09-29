@@ -66,7 +66,6 @@ async def _resolve_stream_backend(engine_id: str | None):
         return tts_backend._active_instance
     return tts_backend.get_engine_instance_for(selected_id)
 
-
 class StreamTTSRequest(BaseModel):
     """Client request for streaming TTS."""
     text: str
