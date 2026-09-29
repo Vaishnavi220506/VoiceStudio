@@ -66,6 +66,7 @@ metadata and the backend fallback mirror it.
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
+- EPUB chapters without a table-of-contents entry are named after their whole heading, not only its first styled fragment (#2393) — thanks @kevin9327!
 - Remote administrator sessions survive reloads and new tabs without storing the master API key (#2352) — thanks @brunobarrientos!
 - Dub extraction shows ffmpeg's actual error instead of its Homebrew version banner (#2353) — thanks @lyrenth!
 - Main-source installs use the built app version even when platform tooling has its own `Version` variable (#2343)
