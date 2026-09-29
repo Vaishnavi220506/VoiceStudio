@@ -62,6 +62,7 @@ metadata and the backend fallback mirror it.
 ### Fixed
 
 - The Enter that confirms Korean, Japanese or Chinese input no longer also submits project renames, language search, pronunciation, worker or MCP fields (#2338) — thanks @HEOJUNFO!
+- English text normalization speaks a dollar amount followed by a period or comma ("It costs $5.") instead of leaving the digits (#2390) — thanks @kevin9327!
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
