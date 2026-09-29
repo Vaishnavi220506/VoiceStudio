@@ -23,6 +23,17 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+});
+
+it('keeps the preview badge offline when requested', async () => {
+  vi.stubEnv('VITE_PREVIEW_OFFLINE', '1');
+  const fetchCount = vi.fn();
+  vi.stubGlobal('fetch', fetchCount);
+  const client = mount();
+  expect(screen.getByText('43,638')).toBeVisible();
+  expect(fetchCount).not.toHaveBeenCalled();
+  client.clear();
 });
 
 it('shows an exact live count and refreshes it every 20 minutes', async () => {

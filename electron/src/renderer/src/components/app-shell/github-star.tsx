@@ -37,6 +37,8 @@ async function fetchStarCount(signal: AbortSignal): Promise<number> {
 export function GithubStar() {
   const { t } = useTranslation();
   const stars = useQuery({
+    // Local combined-PR previews can suppress unsolicited external requests.
+    enabled: import.meta.env.VITE_PREVIEW_OFFLINE !== '1',
     queryKey: ['github-star-count'],
     queryFn: ({ signal }) => fetchStarCount(signal),
     staleTime: REFRESH_MS,
