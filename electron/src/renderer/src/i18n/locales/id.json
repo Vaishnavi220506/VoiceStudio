@@ -1,4 +1,40 @@
 {
+  "cloneQuality": {
+    "title": "Kualitas audio",
+    "precision": "Presisi WAV",
+    "size": "Sekitar {{size}} MB per menit; tergantung mesin.",
+    "hint16": "Cocok untuk didengarkan dan dibagikan.",
+    "hint24": "Presisi tambahan untuk menyunting dan mencampur audio.",
+    "hint32": "Mempertahankan presisi penuh. Berkas lebih besar, bukan suara lebih baik.",
+    "effort": "Penyempurnaan suara",
+    "effortHint": "Lebih banyak tahap perlu waktu lebih lama; suara belum tentu lebih baik.",
+    "mastering": "Ratakan volume",
+    "masteringHint": "Membuat suara lebih seimbang dan konsisten.",
+    "nextTake": "Untuk rekaman berikutnya.",
+    "bits16": "PCM 16-bit",
+    "bits24": "PCM 24-bit",
+    "bits32": "Float 32-bit",
+    "fileInfo": "{{size}} MiB · {{rate}} kHz · {{channels}} kanal · {{bits}}-bit {{encoding}}",
+    "fileSize": "{{size}} MiB",
+    "float": "float",
+    "preset16": "Standar",
+    "preset24": "Untuk penyuntingan",
+    "preset32": "Asli",
+    "sizeUnknown": "Ukuran ditampilkan setelah audio dibuat."
+  },
+  "audioQuality": {
+    "check": "Periksa audio",
+    "failed": "Analisis audio tidak tersedia.",
+    "advisory": "Hanya saran: jeda dan variasi volume dapat disengaja. Audio tidak diubah.",
+    "truncated": "Analisis atau daftar peringatan dibatasi.",
+    "clear": "Tidak ada masalah terdeteksi pada bagian yang dianalisis.",
+    "empty": "Audio kosong",
+    "silence": "Kemungkinan hening",
+    "quiet": "Volume tidak biasa rendah",
+    "loud": "Volume tidak biasa tinggi",
+    "clipping": "Kemungkinan clipping",
+    "invalid": "Sampel audio tidak valid"
+  },
   "twilioIntegration": {
     "exposureWarning": "Mengaktifkan ini membuka port lokal terpisah yang dipublikasikan tunnel Anda ke internet. Hanya permintaan yang ditandatangani dengan Auth Token Twilio Anda yang diterima; bagian lain VoiceStudio tetap privat.",
     "accountSid": "Account SID",
@@ -208,7 +244,8 @@
     "choose_voice": "Pilih suara",
     "change_voice": "Ganti suara",
     "voice_sample": "Sampel suara",
-    "prompt_named": "Apa yang harus diucapkan {{name}}?"
+    "prompt_named": "Apa yang harus diucapkan {{name}}?",
+    "expressive": "Kontrol suara"
   },
   "profileIdentity": {
     "save_hint": "Simpan suara ini untuk digunakan lagi dengan sekali klik.",
@@ -370,7 +407,7 @@
     "cleaning": "Membersihkan…",
     "using_profile": "Menggunakan profil: {{name}}",
     "clear": "jelas",
-    "production_overrides": "Pengesampingan Produksi",
+    "production_overrides": "Kontrol suara",
     "denoise": "Tolak kebisingan",
     "postprocess": "Pascaproses",
     "duration": "Durasi",
@@ -3218,6 +3255,20 @@
     "addingVoice": "Menambahkan suara…",
     "engineDefault": "Default mesin",
     "preview": "Pratinjau suara"
+  },
+  "voiceControls": {
+    "title": "Kontrol suara",
+    "options": "Opsi lainnya",
+    "advanced": "Penyetelan model lanjutan",
+    "guidance": "Pengaruh instruksi",
+    "timing": "Waktu penyempurnaan",
+    "order": "Variasi urutan pengambilan sampel",
+    "variation": "Variasi suara",
+    "balance": "Keseimbangan kasar ke halus",
+    "denoise": "Bersihkan derau referensi",
+    "polish": "Sempurnakan audio yang dihasilkan",
+    "basics": "1× adalah kecepatan normal. Kosongkan durasi untuk irama alami.",
+    "hint": "Biasanya biarkan nilai bawaan. Panduan mengatur pengaruh instruksi; kontrol lain mengubah cara model membentuk suara. Ubah satu per satu."
   },
   "sidebarTools": {
     "simple": "Sederhana",

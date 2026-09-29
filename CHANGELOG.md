@@ -29,6 +29,8 @@ metadata and the backend fallback mirror it.
 
 - MCP agents can design a voice from a text description and reuse it by `profile_id` (`describe_voice`, `design_voice`) (#2368)
 - Dictation vocabulary hint in Settings → Dictation shortcut: names and jargon that Faster Whisper, MLX Whisper and OpenAI-compatible engines should expect (#2395)
+- Choose 16/24/32-bit WAV precision, sampling effort and mastering in Clone and Design, with file sizes and optional audio checks (#2406)
+
 - Run local narration, transcription, translation and voice-conversion recipes with resumable steps and WAV/TXT exports (#2333)
 - Workflows Condition step: route each script or clip down a yes/no branch by whether its text contains, equals, starts with or ends with a phrase — branches may rejoin, and each item picks its own route in the same run — thanks @shivsin25!
 
@@ -60,6 +62,7 @@ metadata and the backend fallback mirror it.
 
 ### Docs
 
+- Record the supplied audio comparisons and installed-engine quality validation (#2406)
 - New call agent guide covering setup, disclosure, recording consent and safeguards (#2306)
 - The Twilio guide and integration directory describe the guided setup and in-app integration pages (#2304)
 
@@ -70,6 +73,8 @@ metadata and the backend fallback mirror it.
 - Voice Design sends your written description unchanged to engines that read free text, such as Qwen3-TTS VoiceDesign and VoxCPM2, instead of reducing it to OmniVoice tags (#2389) — thanks @dominikj-cf!
 - Voice Design keeps a detail you pick when you edit the description, unless the new text says otherwise, and reopening a take restores the description and picks it was made with (#2389)
 - A snapshot interrupted mid-copy (crash, kill or power loss) is no longer listed as a database backup or counted toward the three kept; the leftover partial file is cleaned up on the next snapshot (#2402) — thanks @fadiroot!
+- Preserve float audio and requested seeds through OmniVoice/VoxCPM2 sidecars, and keep playback and saved WAV precision consistent (#2406)
+
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)

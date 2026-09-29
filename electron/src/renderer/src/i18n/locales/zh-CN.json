@@ -1,4 +1,40 @@
 {
+  "cloneQuality": {
+    "title": "音频质量",
+    "precision": "WAV 精度",
+    "size": "每分钟约 {{size}} MB，因引擎而异。",
+    "hint16": "适合收听和分享。",
+    "hint24": "为编辑和混音提供更高精度。",
+    "hint32": "保留完整精度。文件更大，但不会改善声音本身。",
+    "effort": "声音细化",
+    "effortHint": "处理次数越多，耗时越长；声音不一定更好。",
+    "mastering": "平衡音量",
+    "masteringHint": "让声音更均衡、音量更一致。",
+    "nextTake": "用于下一次录音。",
+    "bits16": "16 位 PCM",
+    "bits24": "24 位 PCM",
+    "bits32": "32 位浮点",
+    "fileInfo": "{{size}} MiB · {{rate}} kHz · {{channels}} 声道 · {{bits}} 位 {{encoding}}",
+    "fileSize": "{{size}} MiB",
+    "float": "浮点",
+    "preset16": "标准",
+    "preset24": "用于编辑",
+    "preset32": "原始",
+    "sizeUnknown": "生成后显示文件大小。"
+  },
+  "audioQuality": {
+    "check": "检查音频",
+    "failed": "音频分析不可用。",
+    "advisory": "仅供参考：停顿和音量变化可能是有意的。音频不会被修改。",
+    "truncated": "分析范围或警告列表有限。",
+    "clear": "在已分析的部分未发现问题。",
+    "empty": "空音频",
+    "silence": "可能存在静音",
+    "quiet": "音量异常偏低",
+    "loud": "音量异常偏高",
+    "clipping": "可能存在削波",
+    "invalid": "无效音频采样"
+  },
   "twilioIntegration": {
     "exposureWarning": "开启后会打开一个单独的本地端口，由你的隧道发布到互联网。只接受使用你的 Twilio Auth Token 签名的请求；VoiceStudio 的其余部分保持私密。",
     "accountSid": "Account SID",
@@ -208,7 +244,8 @@
     "choose_voice": "选择声音",
     "change_voice": "更换声音",
     "voice_sample": "声音样本",
-    "prompt_named": "想让{{name}}说些什么？"
+    "prompt_named": "想让{{name}}说些什么？",
+    "expressive": "语音控制"
   },
   "profileIdentity": {
     "save_hint": "保存此声音，下次即可一键使用。",
@@ -387,7 +424,7 @@
     "cleaning": "清理中…",
     "using_profile": "正在使用配置：{{name}}",
     "clear": "清除",
-    "production_overrides": "高级参数",
+    "production_overrides": "语音控制",
     "denoise": "降噪",
     "postprocess": "后处理",
     "duration": "时长",
@@ -3222,6 +3259,20 @@
     "addingVoice": "正在添加声音…",
     "engineDefault": "引擎默认",
     "preview": "预览语音"
+  },
+  "voiceControls": {
+    "title": "语音控制",
+    "options": "更多选项",
+    "advanced": "模型高级调节",
+    "guidance": "提示词影响",
+    "timing": "细化时机",
+    "order": "采样顺序变化",
+    "variation": "声音变化",
+    "balance": "结构与细节平衡",
+    "denoise": "清除参考音频噪声",
+    "polish": "润色生成音频",
+    "basics": "1× 为正常语速。时长留空可使用自然节奏。",
+    "hint": "通常建议保留默认值。引导强度控制提示词的影响，其他选项改变模型构建声音的方式。每次只调整一项。"
   },
   "sidebarTools": {
     "simple": "简洁",

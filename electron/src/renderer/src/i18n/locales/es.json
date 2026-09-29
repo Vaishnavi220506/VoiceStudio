@@ -1,4 +1,40 @@
 {
+  "cloneQuality": {
+    "title": "Calidad de audio",
+    "precision": "Precisión WAV",
+    "size": "Unos {{size}} MB por minuto; depende del motor.",
+    "hint16": "Ideal para escuchar y compartir.",
+    "hint24": "Más precisión para editar y mezclar.",
+    "hint32": "Conserva toda la precisión. Archivos más grandes, sin mejorar la voz.",
+    "effort": "Refinamiento de voz",
+    "effortHint": "Más pasadas tardan más; la voz puede no sonar mejor.",
+    "mastering": "Equilibrar volumen",
+    "masteringHint": "Hace que el sonido sea más equilibrado y uniforme.",
+    "nextTake": "Para tu próxima grabación.",
+    "bits16": "PCM de 16 bits",
+    "bits24": "PCM de 24 bits",
+    "bits32": "Flotante de 32 bits",
+    "fileInfo": "{{size}} MiB · {{rate}} kHz · {{channels}} canales · {{bits}} bits {{encoding}}",
+    "fileSize": "{{size}} MiB",
+    "float": "flotante",
+    "preset16": "Estándar",
+    "preset24": "Para editar",
+    "preset32": "Original",
+    "sizeUnknown": "El tamaño se muestra después de generar el audio."
+  },
+  "audioQuality": {
+    "check": "Revisar audio",
+    "failed": "Análisis de audio no disponible.",
+    "advisory": "Solo orientativo: las pausas y el volumen expresivo pueden ser intencionales. El audio no cambia.",
+    "truncated": "El análisis o la lista de avisos está limitado.",
+    "clear": "No se detectaron problemas en la parte analizada.",
+    "empty": "Audio vacío",
+    "silence": "Posible silencio",
+    "quiet": "Volumen inusualmente bajo",
+    "loud": "Volumen inusualmente alto",
+    "clipping": "Posible saturación",
+    "invalid": "Muestras de audio no válidas"
+  },
   "twilioIntegration": {
     "exposureWarning": "Al activarlo se abre un puerto local independiente que tu túnel publica en internet. Solo se aceptan solicitudes firmadas con tu Auth Token de Twilio; el resto de VoiceStudio sigue siendo privado.",
     "accountSid": "Account SID",
@@ -210,7 +246,8 @@
     "choose_voice": "Elige una voz",
     "change_voice": "Cambiar voz",
     "voice_sample": "Muestra de voz",
-    "prompt_named": "¿Qué debería decir {{name}}?"
+    "prompt_named": "¿Qué debería decir {{name}}?",
+    "expressive": "Controles de voz"
   },
   "profileIdentity": {
     "save_hint": "Guarda esta voz para volver a usarla con un clic.",
@@ -372,7 +409,7 @@
     "cleaning": "Limpieza…",
     "using_profile": "Usando perfil: {{name}}",
     "clear": "claro",
-    "production_overrides": "Anulaciones de producción",
+    "production_overrides": "Controles de voz",
     "denoise": "eliminar ruido",
     "postprocess": "Postproceso",
     "duration": "Duración",
@@ -3220,6 +3257,20 @@
     "addingVoice": "Añadiendo voz…",
     "engineDefault": "Valor predeterminado del motor",
     "preview": "Vista previa de voz"
+  },
+  "voiceControls": {
+    "title": "Controles de voz",
+    "options": "Más opciones",
+    "advanced": "Ajustes avanzados del modelo",
+    "guidance": "Influencia de la indicación",
+    "timing": "Momento del refinamiento",
+    "order": "Variación del orden de muestreo",
+    "variation": "Variación del sonido",
+    "balance": "Equilibrio entre grueso y fino",
+    "denoise": "Limpiar ruido de referencia",
+    "polish": "Pulir el audio generado",
+    "basics": "1× es la velocidad normal. Deja la duración vacía para un ritmo natural.",
+    "hint": "Normalmente conviene usar los valores predeterminados. La guía ajusta la influencia de la indicación; los demás controles cambian cómo el modelo construye el sonido. Cambia uno a la vez."
   },
   "sidebarTools": {
     "simple": "Simple",

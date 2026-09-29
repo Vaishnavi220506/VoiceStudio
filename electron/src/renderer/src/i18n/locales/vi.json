@@ -1,4 +1,40 @@
 {
+  "cloneQuality": {
+    "title": "Chất lượng âm thanh",
+    "precision": "Độ chính xác WAV",
+    "size": "Khoảng {{size}} MB mỗi phút; tùy bộ máy.",
+    "hint16": "Phù hợp để nghe và chia sẻ.",
+    "hint24": "Độ chính xác cao hơn để chỉnh sửa và phối âm.",
+    "hint32": "Giữ nguyên độ chính xác tối đa. Tệp lớn hơn, giọng nói không hay hơn.",
+    "effort": "Tinh chỉnh giọng nói",
+    "effortHint": "Nhiều lượt hơn sẽ mất thêm thời gian; giọng nói có thể không hay hơn.",
+    "mastering": "Cân bằng âm lượng",
+    "masteringHint": "Giúp âm thanh cân bằng và đồng đều hơn.",
+    "nextTake": "Áp dụng cho bản thu tiếp theo.",
+    "bits16": "PCM 16 bit",
+    "bits24": "PCM 24 bit",
+    "bits32": "Số thực 32 bit",
+    "fileInfo": "{{size}} MiB · {{rate}} kHz · {{channels}} kênh · {{bits}} bit {{encoding}}",
+    "fileSize": "{{size}} MiB",
+    "float": "số thực",
+    "preset16": "Tiêu chuẩn",
+    "preset24": "Để chỉnh sửa",
+    "preset32": "Nguyên bản",
+    "sizeUnknown": "Kích thước hiển thị sau khi tạo âm thanh."
+  },
+  "audioQuality": {
+    "check": "Kiểm tra âm thanh",
+    "failed": "Không thể phân tích âm thanh.",
+    "advisory": "Chỉ mang tính tham khảo: khoảng nghỉ và thay đổi âm lượng có thể là chủ ý. Âm thanh không bị thay đổi.",
+    "truncated": "Phân tích hoặc danh sách cảnh báo bị giới hạn.",
+    "clear": "Không phát hiện vấn đề trong phần đã phân tích.",
+    "empty": "Âm thanh trống",
+    "silence": "Có thể có khoảng lặng",
+    "quiet": "Âm lượng thấp bất thường",
+    "loud": "Âm lượng cao bất thường",
+    "clipping": "Có thể bị cắt đỉnh",
+    "invalid": "Mẫu âm thanh không hợp lệ"
+  },
   "twilioIntegration": {
     "exposureWarning": "Bật tính năng này sẽ mở một cổng cục bộ riêng mà đường hầm của bạn công bố ra internet. Chỉ các yêu cầu được ký bằng Auth Token Twilio của bạn mới được chấp nhận; phần còn lại của VoiceStudio vẫn riêng tư.",
     "accountSid": "Account SID",
@@ -208,7 +244,8 @@
     "choose_voice": "Chọn một giọng nói",
     "change_voice": "Thay đổi giọng nói",
     "voice_sample": "Mẫu giọng nói",
-    "prompt_named": "Bạn muốn {{name}} nói gì?"
+    "prompt_named": "Bạn muốn {{name}} nói gì?",
+    "expressive": "Điều chỉnh giọng nói"
   },
   "profileIdentity": {
     "save_hint": "Lưu giọng nói này để sử dụng lại chỉ bằng một cú nhấp chuột.",
@@ -370,7 +407,7 @@
     "cleaning": "Dọn dẹp…",
     "using_profile": "Sử dụng hồ sơ: {{name}}",
     "clear": "rõ ràng",
-    "production_overrides": "Ghi đè sản xuất",
+    "production_overrides": "Điều chỉnh giọng nói",
     "denoise": "Khử nhiễu",
     "postprocess": "Hậu xử lý",
     "duration": "Thời lượng",
@@ -3218,6 +3255,20 @@
     "addingVoice": "Đang thêm giọng nói…",
     "engineDefault": "Mặc định công cụ",
     "preview": "Xem trước giọng nói"
+  },
+  "voiceControls": {
+    "title": "Điều chỉnh giọng nói",
+    "options": "Tùy chọn khác",
+    "advanced": "Tinh chỉnh mô hình nâng cao",
+    "guidance": "Ảnh hưởng của lời nhắc",
+    "timing": "Thời điểm tinh chỉnh",
+    "order": "Biến thiên thứ tự lấy mẫu",
+    "variation": "Biến thiên âm thanh",
+    "balance": "Cân bằng cấu trúc và chi tiết",
+    "denoise": "Lọc nhiễu bản tham chiếu",
+    "polish": "Trau chuốt âm thanh đã tạo",
+    "basics": "1× là tốc độ bình thường. Để trống thời lượng để có nhịp tự nhiên.",
+    "hint": "Thường nên giữ giá trị mặc định. Độ dẫn hướng điều chỉnh ảnh hưởng của lời nhắc; các nút khác thay đổi cách mô hình tạo âm thanh. Mỗi lần chỉ đổi một mục."
   },
   "sidebarTools": {
     "simple": "Đơn giản",
