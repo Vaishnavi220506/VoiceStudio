@@ -69,6 +69,7 @@ metadata and the backend fallback mirror it.
 - English text normalization speaks a dollar amount followed by a period or comma ("It costs $5.") instead of leaving the digits (#2390) — thanks @kevin9327!
 - Voice Design sends your written description unchanged to engines that read free text, such as Qwen3-TTS VoiceDesign and VoxCPM2, instead of reducing it to OmniVoice tags (#2389) — thanks @dominikj-cf!
 - Voice Design keeps a detail you pick when you edit the description, unless the new text says otherwise, and reopening a take restores the description and picks it was made with (#2389)
+- A snapshot interrupted mid-copy (crash, kill or power loss) is no longer listed as a database backup or counted toward the three kept; the leftover partial file is cleaned up on the next snapshot (#2402) — thanks @fadiroot!
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
