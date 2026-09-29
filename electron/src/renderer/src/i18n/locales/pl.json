@@ -3053,7 +3053,14 @@
     "step_audio": "Klip źródłowy",
     "step_transcribe": "Transkrybuj",
     "step_translate": "Przetłumacz",
-    "step_convert": "Konwertuj"
+    "step_convert": "Konwertuj",
+    "condition_phrase": "Szukany tekst",
+    "condition_match": "Dopasowanie",
+    "condition_hint": "Gałąź „tak” działa, gdy tekst pasuje; w przeciwnym razie działa gałąź „nie”. Wielkość liter nie ma znaczenia.",
+    "match_contains": "Zawiera",
+    "match_equals": "Jest dokładnie",
+    "match_starts": "Zaczyna się od",
+    "match_ends": "Kończy się na"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3173,8 +3180,8 @@
     "progress": "{{done}} / {{total}} klipów gotowych",
     "changed": "Zmieniono ustawienia. Uruchomienie utworzy nowe wyniki.",
     "incomplete": "Mowa niepełna. Ponów przed eksportem.",
-    "invalid_graph": "Połącz wszystkie kroki od początku do końca bez rozgałęzień ani pętli.",
-    "invalid_unsupported": "Niezgodne kroki: tekst do tłumaczenia lub mowy, audio do transkrypcji lub konwersji, wygenerowana mowa do normalizacji.",
+    "invalid_graph": "Połącz każdy krok od początku do końca. Tylko warunek może się rozgałęziać, a żadna ścieżka nie może tworzyć pętli.",
+    "invalid_unsupported": "Niezgodne kroki: tekst do tłumaczenia lub mowy, audio do transkrypcji lub konwersji, wygenerowana mowa do normalizacji. Gałęzie, które się łączą, muszą nieść ten sam rodzaj wartości.",
     "invalid_voice": "Wybierz zapisany głos dla każdego kroku mowy lub konwersji.",
     "invalid_scripts": "Dodaj 1–50 niepustych skryptów po maksymalnie 20 000 znaków.",
     "peak": "Szczyt (dBFS)",
@@ -3187,7 +3194,8 @@
     "transcription_recipe": "Audio na tekst",
     "conversion_recipe": "Zmień głos",
     "localization_recipe": "Przetłumacz i przeczytaj",
-    "invalid_language": "Wybierz język źródłowy i docelowy."
+    "invalid_language": "Wybierz język źródłowy i docelowy.",
+    "invalid_condition": "Wpisz tekst, którego ma szukać warunek."
   },
   "voiceSelector": {
     "designed": "Zaprojektowane głosy",

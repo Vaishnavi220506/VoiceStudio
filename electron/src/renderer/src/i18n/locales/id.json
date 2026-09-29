@@ -3049,7 +3049,14 @@
     "step_audio": "Klip sumber",
     "step_transcribe": "Transkripsikan",
     "step_translate": "Terjemahkan",
-    "step_convert": "Konversi"
+    "step_convert": "Konversi",
+    "condition_phrase": "Teks yang dicari",
+    "condition_match": "Kecocokan",
+    "condition_hint": "Cabang ya berjalan saat teks cocok; jika tidak, cabang tidak yang berjalan. Huruf besar-kecil diabaikan.",
+    "match_contains": "Mengandung",
+    "match_equals": "Persis sama dengan",
+    "match_starts": "Diawali dengan",
+    "match_ends": "Diakhiri dengan"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} klip siap",
     "changed": "Pengaturan berubah. Eksekusi membuat keluaran baru.",
     "incomplete": "Ucapan tidak lengkap. Coba lagi sebelum ekspor.",
-    "invalid_graph": "Hubungkan semua langkah dari Mulai ke Selesai tanpa cabang atau siklus.",
-    "invalid_unsupported": "Langkah tidak cocok: teks ke terjemahan atau ucapan, audio ke transkripsi atau konversi, ucapan buatan ke normalisasi.",
+    "invalid_graph": "Hubungkan setiap langkah dari Mulai hingga Selesai. Hanya kondisi yang boleh bercabang, dan tidak ada rute yang boleh berputar.",
+    "invalid_unsupported": "Langkah tidak cocok: teks ke terjemahan atau ucapan, audio ke transkripsi atau konversi, ucapan buatan ke normalisasi. Cabang yang bergabung kembali harus membawa jenis nilai yang sama.",
     "invalid_voice": "Pilih suara tersimpan untuk setiap langkah ucapan atau konversi.",
     "invalid_scripts": "Tambahkan 1–50 naskah tidak kosong, maksimal 20.000 karakter per naskah.",
     "peak": "Puncak (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "Audio menjadi teks",
     "conversion_recipe": "Ubah suara",
     "localization_recipe": "Terjemahkan dan narasikan",
-    "invalid_language": "Pilih bahasa sumber dan tujuan."
+    "invalid_language": "Pilih bahasa sumber dan tujuan.",
+    "invalid_condition": "Masukkan teks yang harus dicari oleh kondisi."
   },
   "voiceSelector": {
     "designed": "Suara yang dirancang",

@@ -3049,7 +3049,14 @@
     "step_audio": "Bronclip",
     "step_transcribe": "Transcriberen",
     "step_translate": "Vertalen",
-    "step_convert": "Converteren"
+    "step_convert": "Converteren",
+    "condition_phrase": "Te zoeken tekst",
+    "condition_match": "Overeenkomst",
+    "condition_hint": "De ja-tak loopt als de tekst overeenkomt, anders de nee-tak. Hoofdletters worden genegeerd.",
+    "match_contains": "Bevat",
+    "match_equals": "Is precies",
+    "match_starts": "Begint met",
+    "match_ends": "Eindigt met"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} clips gereed",
     "changed": "Instellingen gewijzigd. Uitvoeren maakt nieuwe uitvoer.",
     "incomplete": "Spraak onvolledig. Probeer opnieuw vóór export.",
-    "invalid_graph": "Verbind alle stappen van Start tot Einde zonder vertakkingen of lussen.",
-    "invalid_unsupported": "Onverenigbare stappen: tekst naar vertaling of spraak, audio naar transcriptie of conversie en gegenereerde spraak naar normalisatie.",
+    "invalid_graph": "Verbind elke stap van Start tot Einde. Alleen een voorwaarde mag vertakken en geen route mag een lus vormen.",
+    "invalid_unsupported": "Onverenigbare stappen: tekst naar vertaling of spraak, audio naar transcriptie of conversie en gegenereerde spraak naar normalisatie. Takken die weer samenkomen moeten hetzelfde soort waarde dragen.",
     "invalid_voice": "Kies een opgeslagen stem voor elke spraak- of conversiestap.",
     "invalid_scripts": "Voeg 1–50 niet-lege scripts van maximaal 20.000 tekens toe.",
     "peak": "Piek (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "Audio naar tekst",
     "conversion_recipe": "Stem wijzigen",
     "localization_recipe": "Vertalen en vertellen",
-    "invalid_language": "Kies bron- en doeltaal."
+    "invalid_language": "Kies bron- en doeltaal.",
+    "invalid_condition": "Voer de tekst in waarnaar de voorwaarde moet zoeken."
   },
   "voiceSelector": {
     "designed": "Ontworpen stemmen",

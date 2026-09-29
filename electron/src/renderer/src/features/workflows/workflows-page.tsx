@@ -142,6 +142,8 @@ function WorkflowCanvas({ onCalls }: { onCalls: (call?: Pick<WorkflowStep, 'phon
         : ['speak', 'convert'].includes(step.kind) ? (profiles.data?.find((profile) => profile.id === step.voiceId)?.name || t('convert.pick_voice'))
         : step.kind === 'normalize' ? `${step.targetDb ?? -2} dBFS`
         : step.kind === 'call' ? ([step.phone, step.text].filter(Boolean).join(' · ') || t('workflows.add_details'))
+        : step.kind === 'condition' ? (step.text
+          ? `${t(`workflows.match_${step.match || 'contains'}`)} · ${step.text}` : t('workflows.add_details'))
           : step.text || t('workflows.add_details'),
     },
   })), [document.steps, selectedId, t, profiles.data]);
@@ -247,7 +249,7 @@ function WorkflowCanvas({ onCalls }: { onCalls: (call?: Pick<WorkflowStep, 'phon
         <div className="workflow-panel-heading workflow-panel-heading--steps">{t('workflows.add_step')}</div>
         <div className="workflow-palette">{STEP_KINDS.map((kind) => {
           const Icon = icons[kind];
-          return <button key={kind} type="button" aria-label={t(`workflows.step_${kind}`)} disabled={running} onClick={() => addStep(kind)}><span className={`workflow-palette-icon workflow-palette-icon--${kind}`}><Icon size={16} aria-hidden="true" /></span><span>{t(`workflows.step_${kind}`)}{['agent', 'condition', 'call'].includes(kind) && <small className="block text-[10px] text-muted-foreground">{t('workflows.local_draft')}</small>}</span><PlusIcon size={14} className="workflow-palette-add" aria-hidden="true" /></button>;
+          return <button key={kind} type="button" aria-label={t(`workflows.step_${kind}`)} disabled={running} onClick={() => addStep(kind)}><span className={`workflow-palette-icon workflow-palette-icon--${kind}`}><Icon size={16} aria-hidden="true" /></span><span>{t(`workflows.step_${kind}`)}{['agent', 'call'].includes(kind) && <small className="block text-[10px] text-muted-foreground">{t('workflows.local_draft')}</small>}</span><PlusIcon size={14} className="workflow-palette-add" aria-hidden="true" /></button>;
         })}</div>
       </aside>
       <section className="workflow-stage" aria-label={t('workflows.canvas')}>

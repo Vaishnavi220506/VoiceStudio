@@ -3049,7 +3049,14 @@
     "step_audio": "소스 클립",
     "step_transcribe": "전사",
     "step_translate": "번역",
-    "step_convert": "변환"
+    "step_convert": "변환",
+    "condition_phrase": "찾을 텍스트",
+    "condition_match": "일치 방식",
+    "condition_hint": "텍스트가 일치하면 예 분기가, 그렇지 않으면 아니요 분기가 실행됩니다. 대소문자는 구분하지 않습니다.",
+    "match_contains": "포함",
+    "match_equals": "정확히 일치",
+    "match_starts": "다음으로 시작",
+    "match_ends": "다음으로 끝남"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} 클립 준비됨",
     "changed": "설정이 변경되었습니다. 실행하면 새 출력이 생성됩니다.",
     "incomplete": "음성이 불완전합니다. 내보내기 전에 재시도하세요.",
-    "invalid_graph": "분기나 순환 없이 시작부터 끝까지 모든 단계를 연결하세요.",
-    "invalid_unsupported": "호환되지 않는 단계입니다. 텍스트는 번역이나 말하기에, 오디오는 받아쓰기나 변환에, 생성된 음성은 정규화에 연결하세요.",
+    "invalid_graph": "시작부터 종료까지 모든 단계를 연결하세요. 분기는 조건에서만 가능하며, 경로는 순환할 수 없습니다.",
+    "invalid_unsupported": "호환되지 않는 단계입니다. 텍스트는 번역이나 말하기에, 오디오는 받아쓰기나 변환에, 생성된 음성은 정규화에 연결하세요. 다시 합쳐지는 분기는 같은 종류의 값을 전달해야 합니다.",
     "invalid_voice": "각 말하기 또는 변환 단계에서 저장된 음성을 선택하세요.",
     "invalid_scripts": "비어 있지 않은 스크립트 1~50개를 각각 20,000자 이하로 추가하세요.",
     "peak": "피크 (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "오디오를 텍스트로",
     "conversion_recipe": "목소리 변경",
     "localization_recipe": "번역하고 읽기",
-    "invalid_language": "원본 및 대상 언어를 선택하세요."
+    "invalid_language": "원본 및 대상 언어를 선택하세요.",
+    "invalid_condition": "조건이 찾을 텍스트를 입력하세요."
   },
   "voiceSelector": {
     "designed": "디자인된 목소리",

@@ -3049,7 +3049,14 @@
     "step_audio": "ソースクリップ",
     "step_transcribe": "転写する",
     "step_translate": "翻訳する",
-    "step_convert": "変換"
+    "step_convert": "変換",
+    "condition_phrase": "検索するテキスト",
+    "condition_match": "一致方法",
+    "condition_hint": "テキストが一致すると「はい」の分岐が、一致しなければ「いいえ」の分岐が実行されます。大文字と小文字は区別しません。",
+    "match_contains": "次を含む",
+    "match_equals": "次と完全に一致",
+    "match_starts": "次で始まる",
+    "match_ends": "次で終わる"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} クリップ完了",
     "changed": "設定が変更されました。実行すると新しい出力を作成します。",
     "incomplete": "音声が不完全です。書き出す前に再試行してください。",
-    "invalid_graph": "分岐や循環なしで開始から終了まですべてのステップを接続してください。",
-    "invalid_unsupported": "互換性のないステップです。テキストは翻訳か発話、音声は文字起こしか変換、生成音声は正規化に接続してください。",
+    "invalid_graph": "開始から終了まですべてのステップをつないでください。分岐できるのは条件だけで、経路をループさせることはできません。",
+    "invalid_unsupported": "互換性のないステップです。テキストは翻訳か発話、音声は文字起こしか変換、生成音声は正規化に接続してください。 再び合流する分岐は、同じ種類の値を運ぶ必要があります。",
     "invalid_voice": "発話または変換の各ステップで保存済みの声を選んでください。",
     "invalid_scripts": "空でない台本を1～50件、各20,000文字以内で追加してください。",
     "peak": "ピーク (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "音声を文字起こし",
     "conversion_recipe": "声を変更",
     "localization_recipe": "翻訳して読み上げ",
-    "invalid_language": "元の言語と翻訳先の言語を選んでください。"
+    "invalid_language": "元の言語と翻訳先の言語を選んでください。",
+    "invalid_condition": "条件が探すテキストを入力してください。"
   },
   "voiceSelector": {
     "designed": "デザインされた音声",

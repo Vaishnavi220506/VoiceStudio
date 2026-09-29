@@ -3049,7 +3049,14 @@
     "step_audio": "Quellclip",
     "step_transcribe": "Transkribieren",
     "step_translate": "Übersetzen",
-    "step_convert": "Konvertieren"
+    "step_convert": "Konvertieren",
+    "condition_phrase": "Gesuchter Text",
+    "condition_match": "Vergleich",
+    "condition_hint": "Der Ja-Zweig läuft, wenn der Text passt, sonst der Nein-Zweig. Groß- und Kleinschreibung wird ignoriert.",
+    "match_contains": "Enthält",
+    "match_equals": "Ist genau",
+    "match_starts": "Beginnt mit",
+    "match_ends": "Endet mit"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} Clips bereit",
     "changed": "Einstellungen geändert. Erneutes Ausführen erzeugt neue Ausgaben.",
     "incomplete": "Sprache unvollständig. Vor dem Export erneut versuchen.",
-    "invalid_graph": "Alle Schritte ohne Verzweigungen oder Schleifen von Start bis Ende verbinden.",
-    "invalid_unsupported": "Unvereinbare Schritte: Text mit Übersetzung oder Sprache verbinden, Audio mit Transkription oder Konvertierung und erzeugte Sprache mit Normalisierung.",
+    "invalid_graph": "Verbinde jeden Schritt von Start bis Ende. Nur eine Bedingung darf verzweigen, und kein Pfad darf eine Schleife bilden.",
+    "invalid_unsupported": "Unvereinbare Schritte: Text mit Übersetzung oder Sprache verbinden, Audio mit Transkription oder Konvertierung und erzeugte Sprache mit Normalisierung. Wieder zusammenlaufende Zweige müssen denselben Wertetyp führen.",
     "invalid_voice": "Für jeden Sprach- oder Konvertierungsschritt eine gespeicherte Stimme auswählen.",
     "invalid_scripts": "1–50 nicht leere Skripte mit jeweils höchstens 20.000 Zeichen hinzufügen.",
     "peak": "Spitzenpegel (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "Audio in Text",
     "conversion_recipe": "Stimme ändern",
     "localization_recipe": "Übersetzen und vertonen",
-    "invalid_language": "Ausgangs- und Zielsprache auswählen."
+    "invalid_language": "Ausgangs- und Zielsprache auswählen.",
+    "invalid_condition": "Gib den Text ein, nach dem die Bedingung suchen soll."
   },
   "voiceSelector": {
     "designed": "Gestaltete Stimmen",

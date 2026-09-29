@@ -3051,7 +3051,14 @@
     "step_audio": "Clip source",
     "step_transcribe": "Transcrire",
     "step_translate": "Traduire",
-    "step_convert": "Convertir"
+    "step_convert": "Convertir",
+    "condition_phrase": "Texte à rechercher",
+    "condition_match": "Correspondance",
+    "condition_hint": "La branche « oui » s'exécute lorsque le texte correspond, sinon c'est la branche « non ». La casse est ignorée.",
+    "match_contains": "Contient",
+    "match_equals": "Est exactement",
+    "match_starts": "Commence par",
+    "match_ends": "Se termine par"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3171,8 +3178,8 @@
     "progress": "{{done}} / {{total}} clips prêts",
     "changed": "Paramètres modifiés. Relancer crée de nouvelles sorties.",
     "incomplete": "Voix incomplète. Réessayez avant d’exporter.",
-    "invalid_graph": "Reliez toutes les étapes du début à la fin, sans branches ni cycles.",
-    "invalid_unsupported": "Étapes incompatibles : texte vers traduction ou parole, audio vers transcription ou conversion, parole générée vers normalisation.",
+    "invalid_graph": "Reliez chaque étape du début à la fin. Seule une condition peut créer un embranchement, et aucun chemin ne peut boucler.",
+    "invalid_unsupported": "Étapes incompatibles : texte vers traduction ou parole, audio vers transcription ou conversion, parole générée vers normalisation. Les branches qui se rejoignent doivent porter le même type de valeur.",
     "invalid_voice": "Choisissez une voix enregistrée pour chaque étape de parole ou conversion.",
     "invalid_scripts": "Ajoutez 1 à 50 scripts non vides de 20 000 caractères maximum chacun.",
     "peak": "Crête (dBFS)",
@@ -3185,7 +3192,8 @@
     "transcription_recipe": "Audio en texte",
     "conversion_recipe": "Changer la voix",
     "localization_recipe": "Traduire et raconter",
-    "invalid_language": "Choisissez les langues source et cible."
+    "invalid_language": "Choisissez les langues source et cible.",
+    "invalid_condition": "Saisissez le texte que la condition doit rechercher."
   },
   "voiceSelector": {
     "designed": "Voix conçues",

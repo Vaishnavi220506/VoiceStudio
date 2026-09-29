@@ -23,11 +23,13 @@ metadata and the backend fallback mirror it.
 - Videos without sound get a clear message instead of an ffmpeg error dump (#2308)
 - MCP speech files and URLs can deliver Ogg/Opus instead of WAV; Ogg saves preserve int16 audio levels (#2321) — thanks @tracyndoan!
 - Turn a finished dub into a Stories script in one click, speakers and voices included (#2300) — thanks @shivsin25!
+- Workflows can branch: a Condition step sends each item down one of two routes by what its text says
 
 ### Added
 
 - MCP agents can design a voice from a text description and reuse it by `profile_id` (`describe_voice`, `design_voice`) (#2368)
 - Run local narration, transcription, translation and voice-conversion recipes with resumable steps and WAV/TXT exports (#2333)
+- Workflows Condition step: route each script or clip down a yes/no branch by whether its text contains, equals, starts with or ends with a phrase — branches may rejoin, and each item picks its own route in the same run — thanks @shivsin25!
 
 - Call agent backend: place or answer phone calls that hold a task conversation in your verified or designed voice, with an editable AI disclosure, take-over and an after-call summary (#2306)
 - Calls workspace with a live transcript, take-over, hang-up and an after-call summary (#2305)

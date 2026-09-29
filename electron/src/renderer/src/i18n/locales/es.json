@@ -3051,7 +3051,14 @@
     "step_audio": "Clip de origen",
     "step_transcribe": "Transcribir",
     "step_translate": "Traducir",
-    "step_convert": "Convertir"
+    "step_convert": "Convertir",
+    "condition_phrase": "Texto a buscar",
+    "condition_match": "Coincidencia",
+    "condition_hint": "La rama «sí» se ejecuta cuando el texto coincide; si no, se ejecuta la rama «no». No se distinguen mayúsculas.",
+    "match_contains": "Contiene",
+    "match_equals": "Es exactamente",
+    "match_starts": "Empieza por",
+    "match_ends": "Termina en"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3171,8 +3178,8 @@
     "progress": "{{done}} / {{total}} clips listos",
     "changed": "La configuración cambió. Ejecutar crea nuevas salidas.",
     "incomplete": "Voz incompleta. Reintenta antes de exportar.",
-    "invalid_graph": "Conecta todos los pasos de Inicio a Fin sin ramas ni ciclos.",
-    "invalid_unsupported": "Pasos incompatibles: texto a traducción o voz, audio a transcripción o conversión y voz generada a normalización.",
+    "invalid_graph": "Conecta todos los pasos desde Inicio hasta Fin. Solo una condición puede ramificarse y ninguna ruta puede formar un bucle.",
+    "invalid_unsupported": "Pasos incompatibles: texto a traducción o voz, audio a transcripción o conversión y voz generada a normalización. Las ramas que se reúnen deben llevar el mismo tipo de valor.",
     "invalid_voice": "Elige una voz guardada para cada paso de voz o conversión.",
     "invalid_scripts": "Añade 1–50 guiones no vacíos de hasta 20.000 caracteres cada uno.",
     "peak": "Pico (dBFS)",
@@ -3185,7 +3192,8 @@
     "transcription_recipe": "Audio a texto",
     "conversion_recipe": "Cambiar la voz",
     "localization_recipe": "Traducir y narrar",
-    "invalid_language": "Elige los idiomas de origen y destino."
+    "invalid_language": "Elige los idiomas de origen y destino.",
+    "invalid_condition": "Escribe el texto que debe buscar la condición."
   },
   "voiceSelector": {
     "designed": "Voces diseñadas",

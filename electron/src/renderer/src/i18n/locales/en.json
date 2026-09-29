@@ -3049,7 +3049,14 @@
     "step_audio": "Source clip",
     "step_transcribe": "Transcribe",
     "step_translate": "Translate",
-    "step_convert": "Convert"
+    "step_convert": "Convert",
+    "condition_phrase": "Text to look for",
+    "condition_match": "Match",
+    "condition_hint": "The yes branch runs when the text matches; otherwise the no branch runs. Capitals are ignored.",
+    "match_contains": "Contains",
+    "match_equals": "Is exactly",
+    "match_starts": "Starts with",
+    "match_ends": "Ends with"
   },
   "proPage": {
     "title": "VoiceStudio Pro",
@@ -3169,8 +3176,8 @@
     "progress": "{{done}} / {{total}} clips ready",
     "changed": "Settings changed. Running again creates new outputs.",
     "incomplete": "Incomplete speech. Retry before exporting.",
-    "invalid_graph": "Connect all steps from Start to End without branches or cycles.",
-    "invalid_unsupported": "Incompatible steps. Connect text to translation or speech, audio to transcription or conversion, and generated speech to normalization.",
+    "invalid_graph": "Connect every step from Start to End. Only a condition may branch, and no route may loop.",
+    "invalid_unsupported": "Incompatible steps. Connect text to translation or speech, audio to transcription or conversion, and generated speech to normalization. Branches that rejoin must carry the same kind of value.",
     "invalid_voice": "Choose a saved voice for each speech or conversion step.",
     "invalid_scripts": "Add 1–50 nonempty scripts, each at most 20,000 characters.",
     "peak": "Peak (dBFS)",
@@ -3183,7 +3190,8 @@
     "transcription_recipe": "Audio to transcript",
     "conversion_recipe": "Change the voice",
     "localization_recipe": "Translate and narrate",
-    "invalid_language": "Choose source and target languages."
+    "invalid_language": "Choose source and target languages.",
+    "invalid_condition": "Enter the text a condition should look for."
   },
   "voiceSelector": {
     "designed": "Designed voices",
