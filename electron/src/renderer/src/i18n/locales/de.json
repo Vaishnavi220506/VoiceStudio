@@ -81,7 +81,12 @@
     "onDemand": "Lädt bei Nutzung",
     "checkSetup": "Einrichtung prüfen",
     "wait": "Warte, bis die laufende Arbeit abgeschlossen ist, bevor du dies änderst.",
-    "speedHelp": "Höhere Qualität kann länger dauern. Beginne mit Ausgewogen."
+    "speedHelp": "Höhere Qualität kann länger dauern. Beginne mit Ausgewogen.",
+    "engineLabel": "Engine",
+    "modelLabel": "Modell",
+    "runsOn": "Läuft auf",
+    "copyModel": "Modell-ID kopieren",
+    "copied": "Kopiert"
   },
   "homeUi": {
     "subtitle": "Deine quelloffene, vollständig lokale Alternative zu ElevenLabs — Stimmen klonen und gestalten, Videos synchronisieren, diktieren, transkribieren und Hörbücher in 646 Sprachen erstellen.",
@@ -306,7 +311,16 @@
     "choose_voice": "Wählen Sie eine Stimme",
     "change_voice": "Stimme ändern",
     "voice_sample": "Stimmprobe",
-    "prompt_named": "Was soll {{name}} sagen?"
+    "prompt_named": "Was soll {{name}} sagen?",
+    "choose_hint": "Wähle eine gespeicherte Stimme oder füge aus einem kurzen Clip eine neue hinzu.",
+    "add_voice": "Neue Stimme hinzufügen",
+    "sort_label": "Stimmen sortieren",
+    "sort_recent": "Neueste",
+    "sort_name": "A–Z",
+    "change_photo": "Foto ändern",
+    "remove_photo": "Foto entfernen",
+    "photo_hint": "Klicke oder ziehe ein Bild hierher. PNG, JPG oder WebP bis 5 MB.",
+    "current": "Aktuelle Stimme"
   },
   "profileIdentity": {
     "save_hint": "Speichere diese Stimme, um sie mit einem Klick erneut zu verwenden.",

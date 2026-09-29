@@ -962,6 +962,22 @@ def _oom_friendly_reraise(e):
             + _HINTS["WINDOWS_PAGING_FILE_TOO_SMALL"]
             + f" Underlying error: {e}"
         ) from e
+    from core.failure import _HINTS, classify
+    if classify(str(e)) == "POCKETTTS_GATED_WEIGHTS":
+        raise RuntimeError(
+            "PocketTTS voice cloning uses gated weights this install can't "
+            "download yet; its built-in voices still work. "
+            + _HINTS["POCKETTTS_GATED_WEIGHTS"]
+            + f" Underlying error: {_safe_exc_text(e)}"
+        ) from e
+    if classify(str(e)) == "HF_AUTH_FAILED":
+        # A gated or private model file (e.g. Sesame CSM's default-voice
+        # prompts) is an access problem, not an unknown fault.
+        raise RuntimeError(
+            "This model needs files from a gated Hugging Face repository that "
+            "this install can't access yet. " + _HINTS["HF_AUTH_FAILED"]
+            + f" Underlying error: {_safe_exc_text(e)}"
+        ) from e
     if _is_oom_failure(e):
         raise RuntimeError(
             f"TTS engine stopped mid-generation. This usually means it ran out of memory. "

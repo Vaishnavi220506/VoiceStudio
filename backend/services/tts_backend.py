@@ -295,6 +295,17 @@ class TTSBackend(ABC):
     #: to the raw ISO / display token as the language picker renders it.
     language_display_names: dict[str, str] = {}
 
+    @classmethod
+    def configured_identity(cls) -> Optional[str]:
+        """What a fresh instance would load now, for engines whose model is a
+        construction-time preference. ``None`` means construction is not
+        preference-dependent and a cached instance never goes stale."""
+        return None
+
+    def built_identity(self) -> Optional[str]:
+        """The preference-dependent identity this instance was constructed with."""
+        return None
+
     def _normalize_language_code(self, language: object) -> Optional[str]:
         """Resolve picker names and region tags without treating unknown names as Auto."""
         if language is None:
@@ -2323,6 +2334,97 @@ def resolve_kokoro_lang_code(language: str) -> str:
     return code
 
 
+def _harden_mlx_audio_eos_ids() -> None:
+    """Accept a single end-of-speech id from transformers 5 tokenizers.
+
+    mlx-audio's ``_eos_ids`` calls ``set(tokenizer.eos_token_ids)``; with
+    transformers 5 that attribute is one int, so OuteTTS (and any model using a
+    plain Hugging Face tokenizer) fails with "'int' object is not iterable".
+    """
+    try:
+        from mlx_audio.lm import generate as lm_generate
+    except ImportError:
+        return
+    original = getattr(lm_generate, "_eos_ids", None)
+    if original is None or getattr(original, "_accepts_int", False):
+        return
+
+    def _eos_ids(tokenizer):
+        value = getattr(tokenizer, "eos_token_ids", None)
+        if isinstance(value, int):
+            return {value}
+        return original(tokenizer)
+
+    _eos_ids._accepts_int = True
+    lm_generate._eos_ids = _eos_ids
+
+
+#: NLTK data MeloTTS English's g2p_en front end looks up on every call.
+_MELOTTS_NLTK_RESOURCES = (
+    ("taggers/averaged_perceptron_tagger_eng", "averaged_perceptron_tagger_eng"),
+    ("corpora/cmudict", "cmudict"),
+)
+
+
+def _ensure_melotts_text_frontend() -> None:
+    """Fetch MeloTTS's NLTK data into the app data folder on first use.
+
+    g2p_en only downloads the pre-3.9 tagger name, so current NLTK fails with
+    ``LookupError: averaged_perceptron_tagger_eng``. This runs only when the
+    user generates with MeloTTS, alongside that model's own first download.
+    """
+    from pathlib import Path
+
+    try:
+        import g2p_en  # noqa: F401 — mlx-audio imports it lazily mid-generation
+    except ImportError as exc:
+        raise RuntimeError(
+            "MeloTTS English needs the optional 'g2p_en' text package, which is "
+            "not bundled with VoiceStudio. Pick another MLX-Audio model such as "
+            "Kokoro, or install it into VoiceStudio's Python environment "
+            "(uv pip install g2p_en) and retry."
+        ) from exc
+    import nltk
+    from core.config import DATA_DIR
+
+    target = Path(DATA_DIR) / "nltk_data"
+    if str(target) not in nltk.data.path:
+        nltk.data.path.insert(0, str(target))
+    for lookup, package in _MELOTTS_NLTK_RESOURCES:
+        try:
+            nltk.data.find(lookup)
+        except LookupError:
+            target.mkdir(parents=True, exist_ok=True)
+            if not nltk.download(package, download_dir=str(target), quiet=True):
+                raise RuntimeError(
+                    f"MeloTTS needs the NLTK '{package}' data and it could not be "
+                    "downloaded. Check your internet connection, then retry."
+                )
+
+
+def _dia_tagged(text: str) -> str:
+    """Prefix a single-speaker ``[S1]`` tag unless the text already names speakers."""
+    stripped = text.strip()
+    return stripped if re.match(r"\[S[12]\]", stripped) else f"[S1] {stripped}"
+
+
+_OUTETTS_CODEC_SAMPLE_RATE = 24000  # mlx-audio's DAC speech codec
+
+
+def _outetts_reference_array(path: str):
+    """Mono float32 ``mx.array`` at the OuteTTS codec rate, as its in-memory branch expects."""
+    import mlx.core as mx
+    import numpy as np
+    import soundfile as sf
+    from mlx_audio.utils import resample_audio
+
+    audio, sample_rate = sf.read(path, dtype="float32", always_2d=True)
+    mono = audio.mean(axis=1)
+    if sample_rate != _OUTETTS_CODEC_SAMPLE_RATE:
+        mono = resample_audio(mono, sample_rate, _OUTETTS_CODEC_SAMPLE_RATE, axis=0)
+    return mx.array(np.asarray(mono, dtype=np.float32))
+
+
 class MLXAudioBackend(TTSBackend):
     """Blaizzy/mlx-audio — Apple-Silicon-only wrapper over 14+ TTS engines
     (Kokoro, CSM, Dia, Qwen3-TTS, Chatterbox, MeloTTS, OuteTTS, Spark,
@@ -2358,6 +2460,33 @@ class MLXAudioBackend(TTSBackend):
     }
     DEFAULT_MODEL_KEY = "kokoro"
 
+    # Languages each curated model is documented to speak, as ISO 639-1 codes.
+    # Drives both the language picker and the synthesis guard, so neither can
+    # offer a language the model cannot say. Custom repos stay open-ended.
+    # Sources (model cards, checked 2026-09-29):
+    #   kokoro      huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md
+    #   csm         huggingface.co/sesame/csm-1b ("some capacity for non-English
+    #               ... likely won't do well")
+    #   qwen3-tts   huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign (10 languages)
+    #   dia         huggingface.co/nari-labs/Dia-1.6B ("only supports English")
+    #   chatterbox  huggingface.co/ResembleAI/chatterbox (base model; Multilingual
+    #               is a separate checkpoint)
+    #   melotts     huggingface.co/mlx-community/MeloTTS-English-v3-MLX
+    #   outetts     huggingface.co/OuteAI/Llama-OuteTTS-1.0-1B (high + moderate
+    #               training-data tiers)
+    CURATED_MODEL_LANGUAGES: dict[str, tuple[str, ...]] = {
+        "kokoro": ("en", "es", "fr", "hi", "it", "pt", "ja", "zh"),
+        "csm": ("en",),
+        "qwen3-tts": ("zh", "en", "ja", "ko", "de", "fr", "ru", "pt", "es", "it"),
+        "dia": ("en",),
+        "chatterbox": ("en",),
+        "melotts": ("en",),
+        "outetts": (
+            "en", "ar", "zh", "nl", "fr", "de", "it", "ja", "ko", "lt", "ru", "es",
+            "pt", "be", "bn", "ka", "hu", "lv", "fa", "pl", "sw", "ta", "uk",
+        ),
+    }
+
     def __init__(self):
         self._model = None
         self._sr = 24000  # most mlx-audio engines emit 24 kHz mono
@@ -2365,15 +2494,22 @@ class MLXAudioBackend(TTSBackend):
         # model picker) > default. Mirrors active_backend_id()'s resolution
         # order exactly so power-users can still pin a model without the UI
         # silently undoing it.
+        self._model_id = self.configured_identity()
+
+    @classmethod
+    def configured_identity(cls) -> str:
         from core import prefs
         key = prefs.resolve(
             "mlx_audio_model_id",
             env="OMNIVOICE_MLX_AUDIO_MODEL",
-            default=self.DEFAULT_MODEL_KEY,
+            default=cls.DEFAULT_MODEL_KEY,
         )
         # Accept either a curated key ("kokoro") or a full HF repo id
         # ("mlx-community/Kokoro-82M-bf16") — flexibility for power users.
-        self._model_id = self.CURATED_MODELS.get(key, key)
+        return cls.CURATED_MODELS.get(key, key)
+
+    def built_identity(self) -> Optional[str]:
+        return self._model_id
 
     @classmethod
     def is_available(cls) -> tuple[bool, str]:
@@ -2404,12 +2540,25 @@ class MLXAudioBackend(TTSBackend):
     def model_identity(self) -> Optional[str]:
         return self._model_id
 
+    def _curated_key(self) -> Optional[str]:
+        return next(
+            (key for key, repo in self.CURATED_MODELS.items() if repo == self._model_id), None
+        )
+
+    def _check_language(self, language: object) -> Optional[str]:
+        # Kokoro's installed tables are authoritative and accept labels such
+        # as "British English" that the generic ISO check would reject.
+        if self._curated_key() == "kokoro":
+            if isinstance(language, str) and language.strip() and language.strip().lower() != "auto":
+                resolve_kokoro_lang_code(language)
+            return None
+        return super()._check_language(language)
+
     @property
     def supported_languages(self) -> list[str]:
-        # Per-model; Kokoro supports 8, Qwen3 ~4, Kugel 24. Return "multi"
-        # so the language picker doesn't gate by engine — each engine
-        # silently ignores languages it doesn't know.
-        return ["multi"]
+        # Per curated model; an arbitrary HF repo has no declared set.
+        declared = self.CURATED_MODEL_LANGUAGES.get(self._curated_key() or "")
+        return list(declared) if declared else ["multi"]
 
     @property
     def supports_cloning(self) -> bool:
@@ -2443,6 +2592,7 @@ class MLXAudioBackend(TTSBackend):
         if self._model is not None:
             return
         from mlx_audio.tts.utils import load_model
+        _harden_mlx_audio_eos_ids()
         logger.info("Loading mlx-audio model %s", self._model_id)
         self._model = load_model(self._model_id)
 
@@ -2477,6 +2627,20 @@ class MLXAudioBackend(TTSBackend):
         kwargs = {"text": text, "speed": speed}
         if voice:     kwargs["voice"] = voice
         if ref_audio: kwargs["ref_audio"] = ref_audio
+        if self._curated_key() == "melotts":
+            _ensure_melotts_text_frontend()
+        if self._curated_key() == "dia":
+            # Dia is trained on speaker-tagged dialogue (huggingface.co/nari-labs/
+            # Dia-1.6B). Untagged text runs to the full audio length instead of
+            # stopping, which blew through the generation time limit.
+            kwargs["text"] = text = _dia_tagged(text)
+            if ref_text:
+                ref_text = _dia_tagged(ref_text)
+        if ref_audio and isinstance(ref_audio, str) and self._curated_key() == "outetts":
+            # mlx-audio's OuteTTS only defines its Whisper input on the
+            # in-memory branch, so a file path fails with UnboundLocalError
+            # ('resampled_audio'). Hand it the clip as the array it expects.
+            kwargs["ref_audio"] = _outetts_reference_array(ref_audio)
         # The comment above claimed instruct was passed "for Qwen3"; it never
         # was. The curated `qwen3-tts` model IS the VoiceDesign variant, which
         # mlx-audio refuses to run without one — so the engine was unusable no
@@ -2514,8 +2678,9 @@ class MLXAudioBackend(TTSBackend):
                 # entirely (Qwen3-TTS's own docstring: "lang_code: Language
                 # code (auto, chinese, english, etc.)" — a full name, not a
                 # 2-letter code). Kokoro's strict validation doesn't apply to
-                # them, so don't reject a language that's valid for whatever
-                # model is actually active.
+                # them. Curated models are checked against their documented
+                # set instead of silently speaking a language they don't know.
+                self._check_language(language)
                 kwargs["lang_code"] = language[:2].lower()
 
         def collect(results):
@@ -3587,10 +3752,41 @@ def language_options(backend_id: str) -> Optional[list[str]]:
                 atexit.unregister(shutdown)
 
 
-def _installed_kokoro_language_options() -> Optional[list[str]]:
+# The language tables shipped by the mlx-audio release this app is tested with
+# (mlx_audio/tts/models/kokoro/pipeline.py, 0.3–0.5). Used only when the
+# installed tables cannot be read, so Kokoro never falls back to "every
+# language" in the picker — synthesis would reject most of them (#977).
+_KOKORO_FALLBACK_TABLES = (
+    {"en": "a", "en-us": "a", "en-gb": "b", "es": "e", "fr-fr": "f", "fr": "f",
+     "hi": "h", "it": "i", "pt-br": "p", "pt": "p", "ja": "j", "zh": "z"},
+    {"a": "American English", "b": "British English", "e": "es", "f": "fr-fr",
+     "h": "hi", "i": "it", "p": "pt-br", "j": "Japanese", "z": "Mandarin Chinese"},
+)
+
+
+def _literal_table(node):
+    """Evaluate ``{...}`` or ``dict(key=value, ...)`` without executing code.
+
+    mlx-audio declares ``LANG_CODES = dict(a=..., ...)``; ``literal_eval``
+    alone rejects that call, which silently hid Kokoro's real language set.
+    """
+    import ast
+
+    if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "dict"
+            and all(keyword.arg for keyword in node.keywords)):
+        table = {}
+        for argument in node.args:
+            table.update(ast.literal_eval(argument))
+        table.update({keyword.arg: ast.literal_eval(keyword.value) for keyword in node.keywords})
+        return table
+    return ast.literal_eval(node)
+
+
+def _installed_kokoro_language_options() -> list[str]:
     """Read the installed model's literal tables without importing MLX or weights.
 
-    Unknown/new package layouts stay unknown rather than using a guessed list.
+    An unreadable or new package layout falls back to the tested release's
+    declared tables instead of leaving the picker open to every language.
     """
     import ast
     from importlib import metadata
@@ -3605,13 +3801,13 @@ def _installed_kokoro_language_options() -> Optional[list[str]]:
             if isinstance(node, ast.Assign):
                 for target in node.targets:
                     if isinstance(target, ast.Name) and target.id in {"ALIASES", "LANG_CODES"}:
-                        tables[target.id] = ast.literal_eval(node.value)
+                        tables[target.id] = _literal_table(node.value)
         aliases, languages = tables["ALIASES"], tables["LANG_CODES"]
-        return sorted(name for name, code in LANG_NAME_TO_ID.items()
-                      if aliases.get(_KOKORO_ISO_BY_FULL_NAME.get(name, code), code) in languages)
     except Exception:
-        logger.debug("Kokoro language metadata unavailable", exc_info=True)
-        return None
+        logger.warning("Kokoro language tables unreadable; using the declared set", exc_info=True)
+        aliases, languages = _KOKORO_FALLBACK_TABLES
+    return sorted(name for name, code in LANG_NAME_TO_ID.items()
+                  if aliases.get(_KOKORO_ISO_BY_FULL_NAME.get(name, code), code) in languages)
 
 
 
@@ -3919,13 +4115,33 @@ def get_engine_instance(cls, *, now: Optional[float] = None):
     an extra sidecar process the first time the lock is acquired. One instance
     per process is the right move.
     """
+    stale = None
     with _ENGINE_CACHE_LOCK:
         inst = _ENGINE_INSTANCES.get(cls)
+        if inst is not None and _built_for_other_model(cls, inst):
+            # A model picked in Settings after this instance was built (mlx-audio's
+            # curated models) must take effect; otherwise the old model keeps
+            # speaking under the new name. A job still holding it keeps its copy.
+            stale = None if _ENGINE_IN_USE.get(cls) else inst
+            inst = None
         if inst is None:
             inst = cls()
             _ENGINE_INSTANCES[cls] = inst
         _ENGINE_LAST_USED[cls] = time.monotonic() if now is None else float(now)
-        return inst
+    if stale is not None:
+        try:
+            stale.unload()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("model switch: %s.unload() raised: %s", type(stale).__name__, exc)
+    return inst
+
+
+def _built_for_other_model(cls, inst) -> bool:
+    try:
+        wanted = cls.configured_identity()
+    except Exception:  # noqa: BLE001 — a preference read must never block synthesis
+        return False
+    return wanted is not None and wanted != inst.built_identity()
 
 
 def get_engine_instance_for(engine_id: str, *, now: Optional[float] = None):

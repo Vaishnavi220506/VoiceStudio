@@ -81,7 +81,12 @@
     "onDemand": "Loads on use",
     "checkSetup": "Check setup",
     "wait": "Wait for current work to finish before changing this.",
-    "speedHelp": "Higher quality can take longer. Start with Balanced."
+    "speedHelp": "Higher quality can take longer. Start with Balanced.",
+    "engineLabel": "Engine",
+    "modelLabel": "Model",
+    "runsOn": "Runs on",
+    "copyModel": "Copy model ID",
+    "copied": "Copied"
   },
   "homeUi": {
     "subtitle": "Your open-source, fully local alternative to ElevenLabs — clone and design voices, dub videos, dictate, transcribe, and create audiobooks in 646 languages.",
@@ -633,7 +638,16 @@
     "choose_voice": "Choose a voice",
     "change_voice": "Change voice",
     "voice_sample": "Voice sample",
-    "prompt_named": "What should {{name}} say?"
+    "prompt_named": "What should {{name}} say?",
+    "choose_hint": "Pick a saved voice, or add a new one from a short clip.",
+    "add_voice": "Add a new voice",
+    "sort_label": "Sort voices",
+    "sort_recent": "Newest",
+    "sort_name": "A–Z",
+    "change_photo": "Change photo",
+    "remove_photo": "Remove photo",
+    "photo_hint": "Click or drop an image. PNG, JPG or WebP up to 5 MB.",
+    "current": "Current voice"
   },
   "profileIdentity": {
     "save_hint": "Save this voice to use it again in one click.",

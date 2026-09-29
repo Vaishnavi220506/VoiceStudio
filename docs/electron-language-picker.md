@@ -35,9 +35,14 @@ requests are checked before clone/design, long-form, batch and dub synthesis;
 engine-side validation remains authoritative.
 
 Finite engines use their adapter's language declarations. Native OmniVoice adapters
-use the bundled language vocabulary. MLX-Audio Kokoro reads literal language tables
-from its installed package without importing MLX or loading weights. Missing/custom
-metadata is explicitly unknown, not a claim of universal support. Worker language
+use the bundled language vocabulary. Each curated MLX-Audio model declares the
+languages its model card documents (`MLXAudioBackend.CURATED_MODEL_LANGUAGES`, with
+sources in the code): CSM, Dia, Chatterbox and MeloTTS-English are English-only,
+Qwen3-TTS covers 10 languages and OuteTTS 1.0 covers 23. The same list drives the
+picker and the synthesis guard. Kokoro reads its tables from the installed package
+(including `dict(...)` declarations) without importing MLX or loading weights, and
+falls back to its declared set if those tables cannot be read. Only a custom
+MLX-Audio repo is explicitly unknown, which is not a claim of universal support. Worker language
 metadata is not yet advertised by the runtime API, so local lists never restrict a
 remote worker. Loading and failed discovery have separate labels. No models are
 downloaded or switched by selecting a language. Auto retains each engine's existing

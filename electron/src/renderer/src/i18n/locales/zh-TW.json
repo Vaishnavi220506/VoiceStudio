@@ -81,7 +81,12 @@
     "onDemand": "使用時載入",
     "checkSetup": "檢查設定",
     "wait": "請等待目前的工作完成後再變更此設定。",
-    "speedHelp": "更高的品質可能需要更長時間。建議從「平衡」開始。"
+    "speedHelp": "更高的品質可能需要更長時間。建議從「平衡」開始。",
+    "engineLabel": "引擎",
+    "modelLabel": "模型",
+    "runsOn": "執行於",
+    "copyModel": "複製模型 ID",
+    "copied": "已複製"
   },
   "homeUi": {
     "subtitle": "你的開源、完全本機執行的 ElevenLabs 替代方案——複製與設計聲音、影片配音、語音輸入、轉錄和有聲書製作，支援 646 種語言。",
@@ -306,7 +311,16 @@
     "choose_voice": "選擇聲音",
     "change_voice": "更換聲音",
     "voice_sample": "聲音樣本",
-    "prompt_named": "想讓{{name}}說些什麼？"
+    "prompt_named": "想讓{{name}}說些什麼？",
+    "choose_hint": "選擇已儲存的聲音，或用一段短音訊新增聲音。",
+    "add_voice": "新增聲音",
+    "sort_label": "排序聲音",
+    "sort_recent": "最新",
+    "sort_name": "A–Z",
+    "change_photo": "更換照片",
+    "remove_photo": "移除照片",
+    "photo_hint": "點擊或拖入圖片。PNG、JPG 或 WebP，最大 5 MB。",
+    "current": "目前聲音"
   },
   "profileIdentity": {
     "save_hint": "儲存此聲音，下次即可一鍵使用。",

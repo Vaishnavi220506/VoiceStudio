@@ -81,7 +81,12 @@
     "onDemand": "Laddas vid användning",
     "checkSetup": "Kontrollera inställningar",
     "wait": "Vänta tills det pågående arbetet är klart innan du ändrar detta.",
-    "speedHelp": "Högre kvalitet kan ta längre tid. Börja med Balanserad."
+    "speedHelp": "Högre kvalitet kan ta längre tid. Börja med Balanserad.",
+    "engineLabel": "Motor",
+    "modelLabel": "Modell",
+    "runsOn": "Körs på",
+    "copyModel": "Kopiera modell-ID",
+    "copied": "Kopierat"
   },
   "homeUi": {
     "subtitle": "Ditt alternativ till ElevenLabs med öppen källkod, helt lokalt — klona och skapa röster, dubba videor, diktera, transkribera och skapa ljudböcker på 646 språk.",
@@ -306,7 +311,16 @@
     "choose_voice": "Välj en röst",
     "change_voice": "Byt röst",
     "voice_sample": "Röstprov",
-    "prompt_named": "Vad ska {{name}} säga?"
+    "prompt_named": "Vad ska {{name}} säga?",
+    "choose_hint": "Välj en sparad röst eller lägg till en ny från ett kort klipp.",
+    "add_voice": "Lägg till en ny röst",
+    "sort_label": "Sortera röster",
+    "sort_recent": "Nyaste",
+    "sort_name": "A–Ö",
+    "change_photo": "Byt foto",
+    "remove_photo": "Ta bort foto",
+    "photo_hint": "Klicka eller släpp en bild. PNG, JPG eller WebP upp till 5 MB.",
+    "current": "Aktuell röst"
   },
   "profileIdentity": {
     "save_hint": "Spara den här rösten för att använda den igen med ett klick.",

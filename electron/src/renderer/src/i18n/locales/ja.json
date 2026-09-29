@@ -81,7 +81,12 @@
     "onDemand": "使用時に読み込み",
     "checkSetup": "設定を確認",
     "wait": "この設定を変更するには、現在の処理が完了するまでお待ちください。",
-    "speedHelp": "高品質にすると時間がかかる場合があります。まずは「バランス」をお試しください。"
+    "speedHelp": "高品質にすると時間がかかる場合があります。まずは「バランス」をお試しください。",
+    "engineLabel": "エンジン",
+    "modelLabel": "モデル",
+    "runsOn": "実行環境",
+    "copyModel": "モデル ID をコピー",
+    "copied": "コピーしました"
   },
   "homeUi": {
     "subtitle": "オープンソースで完全ローカルなElevenLabsの代替 — 声のクローンとデザイン、動画の吹き替え、音声入力、文字起こし、オーディオブック制作を646言語で。",
@@ -306,7 +311,16 @@
     "choose_voice": "音声を選択",
     "change_voice": "音声を変更",
     "voice_sample": "音声サンプル",
-    "prompt_named": "{{name}}に何を話してもらいますか？"
+    "prompt_named": "{{name}}に何を話してもらいますか？",
+    "choose_hint": "保存した音声を選ぶか、短いクリップから新しい音声を追加します。",
+    "add_voice": "新しい音声を追加",
+    "sort_label": "音声を並べ替え",
+    "sort_recent": "新しい順",
+    "sort_name": "A–Z",
+    "change_photo": "写真を変更",
+    "remove_photo": "写真を削除",
+    "photo_hint": "クリックするか画像をドロップします。PNG、JPG、WebP（5 MB まで）。",
+    "current": "現在の音声"
   },
   "profileIdentity": {
     "save_hint": "この音声を保存すると、次回からワンクリックで使えます。",

@@ -81,7 +81,12 @@
     "onDemand": "Carga al usar",
     "checkSetup": "Revisar configuración",
     "wait": "Espera a que termine el trabajo actual antes de cambiar esto.",
-    "speedHelp": "Una mayor calidad puede tardar más. Empieza con Equilibrado."
+    "speedHelp": "Una mayor calidad puede tardar más. Empieza con Equilibrado.",
+    "engineLabel": "Motor",
+    "modelLabel": "Modelo",
+    "runsOn": "Se ejecuta en",
+    "copyModel": "Copiar ID del modelo",
+    "copied": "Copiado"
   },
   "homeUi": {
     "subtitle": "Tu alternativa a ElevenLabs de código abierto y totalmente local: clona y diseña voces, dobla vídeos, dicta, transcribe y crea audiolibros en 646 idiomas.",
@@ -308,7 +313,16 @@
     "choose_voice": "Elige una voz",
     "change_voice": "Cambiar voz",
     "voice_sample": "Muestra de voz",
-    "prompt_named": "¿Qué debería decir {{name}}?"
+    "prompt_named": "¿Qué debería decir {{name}}?",
+    "choose_hint": "Elige una voz guardada o añade una nueva a partir de un clip corto.",
+    "add_voice": "Añadir una voz nueva",
+    "sort_label": "Ordenar voces",
+    "sort_recent": "Más recientes",
+    "sort_name": "A–Z",
+    "change_photo": "Cambiar foto",
+    "remove_photo": "Quitar foto",
+    "photo_hint": "Haz clic o suelta una imagen. PNG, JPG o WebP de hasta 5 MB.",
+    "current": "Voz actual"
   },
   "profileIdentity": {
     "save_hint": "Guarda esta voz para volver a usarla con un clic.",

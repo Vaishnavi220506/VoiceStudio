@@ -81,7 +81,12 @@
     "onDemand": "사용 시 로드",
     "checkSetup": "설정 확인",
     "wait": "현재 작업이 끝난 후 변경하세요.",
-    "speedHelp": "품질을 높이면 시간이 더 걸릴 수 있습니다. 균형 모드로 시작하세요."
+    "speedHelp": "품질을 높이면 시간이 더 걸릴 수 있습니다. 균형 모드로 시작하세요.",
+    "engineLabel": "엔진",
+    "modelLabel": "모델",
+    "runsOn": "실행 위치",
+    "copyModel": "모델 ID 복사",
+    "copied": "복사됨"
   },
   "homeUi": {
     "subtitle": "오픈 소스로 완전히 로컬에서 실행되는 ElevenLabs의 대안 — 646개 언어로 목소리를 복제하고 디자인하며, 영상 더빙, 받아쓰기, 전사, 오디오북 제작까지.",
@@ -306,7 +311,16 @@
     "choose_voice": "음성을 선택하세요",
     "change_voice": "음성 변경",
     "voice_sample": "음성 샘플",
-    "prompt_named": "{{name}}이(가) 어떤 말을 하면 좋을까요?"
+    "prompt_named": "{{name}}이(가) 어떤 말을 하면 좋을까요?",
+    "choose_hint": "저장된 음성을 선택하거나 짧은 클립으로 새 음성을 추가하세요.",
+    "add_voice": "새 음성 추가",
+    "sort_label": "음성 정렬",
+    "sort_recent": "최신순",
+    "sort_name": "A–Z",
+    "change_photo": "사진 변경",
+    "remove_photo": "사진 제거",
+    "photo_hint": "클릭하거나 이미지를 끌어다 놓으세요. PNG, JPG, WebP, 최대 5MB.",
+    "current": "현재 음성"
   },
   "profileIdentity": {
     "save_hint": "이 음성을 저장하면 다음에 한 번의 클릭으로 사용할 수 있습니다.",

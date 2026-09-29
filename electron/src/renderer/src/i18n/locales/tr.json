@@ -81,7 +81,12 @@
     "onDemand": "Kullanırken yüklenir",
     "checkSetup": "Kurulumu kontrol et",
     "wait": "Bunu değiştirmeden önce mevcut işin bitmesini bekleyin.",
-    "speedHelp": "Daha yüksek kalite daha uzun sürebilir. Dengeli ile başlayın."
+    "speedHelp": "Daha yüksek kalite daha uzun sürebilir. Dengeli ile başlayın.",
+    "engineLabel": "Motor",
+    "modelLabel": "Model",
+    "runsOn": "Çalıştığı yer",
+    "copyModel": "Model kimliğini kopyala",
+    "copied": "Kopyalandı"
   },
   "homeUi": {
     "subtitle": "ElevenLabs’a açık kaynaklı, tamamen yerel alternatifiniz — 646 dilde ses klonlayıp tasarlayın, videolara dublaj yapın, dikte edin, yazıya dökün ve sesli kitaplar oluşturun.",
@@ -306,7 +311,16 @@
     "choose_voice": "Bir ses seçin",
     "change_voice": "Sesi değiştir",
     "voice_sample": "Ses örneği",
-    "prompt_named": "{{name}} ne söylesin?"
+    "prompt_named": "{{name}} ne söylesin?",
+    "choose_hint": "Kayıtlı bir ses seçin veya kısa bir klipten yeni bir ses ekleyin.",
+    "add_voice": "Yeni ses ekle",
+    "sort_label": "Sesleri sırala",
+    "sort_recent": "En yeni",
+    "sort_name": "A–Z",
+    "change_photo": "Fotoğrafı değiştir",
+    "remove_photo": "Fotoğrafı kaldır",
+    "photo_hint": "Tıklayın veya bir görsel bırakın. 5 MB'a kadar PNG, JPG veya WebP.",
+    "current": "Geçerli ses"
   },
   "profileIdentity": {
     "save_hint": "Tek tıklamayla tekrar kullanmak için bu sesi kaydedin.",

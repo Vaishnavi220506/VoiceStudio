@@ -81,7 +81,12 @@
     "onDemand": "Ładuje przy użyciu",
     "checkSetup": "Sprawdź konfigurację",
     "wait": "Poczekaj na zakończenie bieżącego zadania, zanim to zmienisz.",
-    "speedHelp": "Wyższa jakość może wymagać więcej czasu. Zacznij od trybu Zrównoważony."
+    "speedHelp": "Wyższa jakość może wymagać więcej czasu. Zacznij od trybu Zrównoważony.",
+    "engineLabel": "Silnik",
+    "modelLabel": "Model",
+    "runsOn": "Działa na",
+    "copyModel": "Kopiuj ID modelu",
+    "copied": "Skopiowano"
   },
   "homeUi": {
     "subtitle": "Twoja otwartoźródłowa, w pełni lokalna alternatywa dla ElevenLabs — klonuj i projektuj głosy, dubbinguj filmy, dyktuj, transkrybuj i twórz audiobooki w 646 językach.",
@@ -310,7 +315,16 @@
     "choose_voice": "Wybierz głos",
     "change_voice": "Zmień głos",
     "voice_sample": "Próbka głosu",
-    "prompt_named": "Co ma powiedzieć {{name}}?"
+    "prompt_named": "Co ma powiedzieć {{name}}?",
+    "choose_hint": "Wybierz zapisany głos lub dodaj nowy z krótkiego nagrania.",
+    "add_voice": "Dodaj nowy głos",
+    "sort_label": "Sortuj głosy",
+    "sort_recent": "Najnowsze",
+    "sort_name": "A–Z",
+    "change_photo": "Zmień zdjęcie",
+    "remove_photo": "Usuń zdjęcie",
+    "photo_hint": "Kliknij lub upuść obraz. PNG, JPG lub WebP do 5 MB.",
+    "current": "Bieżący głos"
   },
   "profileIdentity": {
     "save_hint": "Zapisz ten głos, aby użyć go ponownie jednym kliknięciem.",

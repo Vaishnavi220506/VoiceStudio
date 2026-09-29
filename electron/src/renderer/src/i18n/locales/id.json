@@ -81,7 +81,12 @@
     "onDemand": "Dimuat saat dipakai",
     "checkSetup": "Periksa pengaturan",
     "wait": "Tunggu pekerjaan saat ini selesai sebelum mengubah ini.",
-    "speedHelp": "Kualitas lebih tinggi bisa memakan waktu lebih lama. Mulai dengan Seimbang."
+    "speedHelp": "Kualitas lebih tinggi bisa memakan waktu lebih lama. Mulai dengan Seimbang.",
+    "engineLabel": "Mesin",
+    "modelLabel": "Model",
+    "runsOn": "Berjalan di",
+    "copyModel": "Salin ID model",
+    "copied": "Disalin"
   },
   "homeUi": {
     "subtitle": "Alternatif ElevenLabs Anda yang sumber terbuka dan sepenuhnya lokal — kloning dan rancang suara, sulihsuarakan video, dikte, transkripsikan, dan buat buku audio dalam 646 bahasa.",
@@ -306,7 +311,16 @@
     "choose_voice": "Pilih suara",
     "change_voice": "Ganti suara",
     "voice_sample": "Sampel suara",
-    "prompt_named": "Apa yang harus diucapkan {{name}}?"
+    "prompt_named": "Apa yang harus diucapkan {{name}}?",
+    "choose_hint": "Pilih suara tersimpan, atau tambahkan suara baru dari klip pendek.",
+    "add_voice": "Tambah suara baru",
+    "sort_label": "Urutkan suara",
+    "sort_recent": "Terbaru",
+    "sort_name": "A–Z",
+    "change_photo": "Ganti foto",
+    "remove_photo": "Hapus foto",
+    "photo_hint": "Klik atau letakkan gambar. PNG, JPG, atau WebP hingga 5 MB.",
+    "current": "Suara saat ini"
   },
   "profileIdentity": {
     "save_hint": "Simpan suara ini untuk digunakan lagi dengan sekali klik.",

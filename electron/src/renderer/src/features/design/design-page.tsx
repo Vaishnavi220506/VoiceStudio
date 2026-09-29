@@ -37,7 +37,6 @@ import {
   PencilIcon,
   PlayIcon,
   SaveIcon,
-  Settings2Icon,
   ShuffleIcon,
   SlidersHorizontalIcon,
   SparklesIcon,
@@ -50,7 +49,7 @@ import { Input } from '@/components/ui/input';
 import { useGenerateClone } from '@/hooks/use-generate';
 import { OutputPanel } from '@/features/clone/output-panel';
 import { QualityControls } from '@/features/clone/quality-controls';
-import { ProductionSettings } from '@/features/clone/action-bar';
+import { VoiceControls } from '@/features/clone/action-bar';
 import { EngineLanguagePicker } from '@/features/clone/engine-language-picker';
 import { queryKeys } from '@/lib/query';
 import { cn } from '@/lib/utils';
@@ -65,7 +64,6 @@ export function DesignPage() {
   const [draft, setDraft] = useState(readDraft);
   const [name, setName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [productionOpen, setProductionOpen] = useState(false);
   const [startingOpen, setStartingOpen] = useState(true);
   const mapper = useDescription((mapped, described) =>
     // A mapping that lands after the description changed (edited, or the
@@ -94,9 +92,6 @@ export function DesignPage() {
     window.addEventListener(DESIGN_DRAFT_EVENT, restore);
     return () => window.removeEventListener(DESIGN_DRAFT_EVENT, restore);
   }, []);
-  useEffect(() => {
-    if (selectedTake) setProductionOpen(false);
-  }, [selectedTake]);
   useEffect(() => {
     const timer = setTimeout(() => {
       try {
@@ -275,7 +270,6 @@ export function DesignPage() {
                     size="icon-xs"
                     aria-label={t('paneActions.edit') + ': ' + profile.name}
                     onClick={() => {
-                      setProductionOpen(false);
                       setEditingId(profile.id);
                     }}
                   >
@@ -503,7 +497,6 @@ export function DesignPage() {
                 }))
               }
             />
-            <QualityControls disabled={generation.isGenerating} />
           </div>
           <div className="mx-auto w-full max-w-4xl shrink-0 px-6 pb-4">
             {generation.designBlocker === 'engine' && !generation.isGenerating && (
@@ -527,19 +520,8 @@ export function DesignPage() {
               <div className="min-w-0 justify-self-start">
                 <div className="flex items-center gap-1">
                   <EngineLanguagePicker operation="tts" />
-                  <Button
-                    variant={productionOpen ? 'secondary' : 'ghost'}
-                    size="icon-sm"
-                    aria-label={t('clone.production_overrides')}
-                    aria-expanded={productionOpen}
-                    onClick={() => {
-                      openTake(null);
-                      setEditingId(null);
-                      setProductionOpen((open) => !open);
-                    }}
-                  >
-                    <Settings2Icon />
-                  </Button>
+                  <QualityControls size="sm" disabled={generation.isGenerating} />
+                  <VoiceControls size="icon-sm" />
                 </div>
               </div>
               <span
@@ -632,15 +614,6 @@ export function DesignPage() {
             onClose={() => openTake(null)}
           >
             <TakeDetails item={selectedTake} />
-          </WorkspacePane>
-        )}
-        {!editingProfile && !selectedTake && productionOpen && (
-          <WorkspacePane
-            title={t('clone.production_overrides')}
-            icon={SlidersHorizontalIcon}
-            onClose={() => setProductionOpen(false)}
-          >
-            <ProductionSettings />
           </WorkspacePane>
         )}
       </div>

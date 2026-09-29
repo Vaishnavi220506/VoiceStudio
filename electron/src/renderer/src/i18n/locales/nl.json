@@ -81,7 +81,12 @@
     "onDemand": "Laadt bij gebruik",
     "checkSetup": "Instellingen nakijken",
     "wait": "Wacht tot het huidige werk klaar is voordat je dit wijzigt.",
-    "speedHelp": "Hogere kwaliteit kan langer duren. Begin met Gebalanceerd."
+    "speedHelp": "Hogere kwaliteit kan langer duren. Begin met Gebalanceerd.",
+    "engineLabel": "Engine",
+    "modelLabel": "Model",
+    "runsOn": "Draait op",
+    "copyModel": "Model-ID kopiëren",
+    "copied": "Gekopieerd"
   },
   "homeUi": {
     "subtitle": "Jouw open-source, volledig lokale alternatief voor ElevenLabs — kloon en ontwerp stemmen, dub video’s, dicteer, transcribeer en maak luisterboeken in 646 talen.",
@@ -306,7 +311,16 @@
     "choose_voice": "Kies een stem",
     "change_voice": "Stem wijzigen",
     "voice_sample": "Stemvoorbeeld",
-    "prompt_named": "Wat moet {{name}} zeggen?"
+    "prompt_named": "Wat moet {{name}} zeggen?",
+    "choose_hint": "Kies een opgeslagen stem of voeg een nieuwe toe vanuit een korte clip.",
+    "add_voice": "Nieuwe stem toevoegen",
+    "sort_label": "Stemmen sorteren",
+    "sort_recent": "Nieuwste",
+    "sort_name": "A–Z",
+    "change_photo": "Foto wijzigen",
+    "remove_photo": "Foto verwijderen",
+    "photo_hint": "Klik of sleep een afbeelding hierheen. PNG, JPG of WebP tot 5 MB.",
+    "current": "Huidige stem"
   },
   "profileIdentity": {
     "save_hint": "Bewaar deze stem om hem met één klik opnieuw te gebruiken.",

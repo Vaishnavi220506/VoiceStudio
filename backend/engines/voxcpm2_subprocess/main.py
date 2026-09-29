@@ -199,22 +199,24 @@ def generation_kwargs(text: str, **options) -> dict:
     control = " ".join(control.replace("(", " ").replace(")", " ").split())
     ref_text = (options.get("ref_text") or "").strip()
     continuation = bool(ref_audio and ref_text and not control)
-    # Bound work per request. VoxCPM's upstream defaults allow 4096 tokens
-    # and bad-case retries, which can make a single desktop request run for
-    # many minutes. Keep short utterances responsive and cap long inputs.
-    max_len = min(2048, max(128, len(text) * 3))
+    # Steps come from the UI's sampling slider (1-64 for VoxCPM2); keep the
+    # upstream default of 10 when a caller sends none.
     try:
-        inference_timesteps = int(options.get("num_step", 4))
+        inference_timesteps = int(options.get("num_step", 10))
     except (TypeError, ValueError):
-        inference_timesteps = 4
-    inference_timesteps = min(30, max(1, inference_timesteps))
+        inference_timesteps = 10
+    inference_timesteps = min(64, max(1, inference_timesteps))
     return {
         "text": f"({control}){text}" if control else text,
         "cfg_value": options.get("guidance_scale", 2.0),
-        "max_len": max_len,
         "inference_timesteps": inference_timesteps,
+        # Upstream retries a "bad case" up to three whole generations, which
+        # could keep one desktop request running for many minutes.
         "retry_badcase": False,
-        "retry_badcase_max_times": 0,
+        # One attempt, no bad-case retries. VoxCPM runs `while attempts <
+        # max_times`, so 0 skipped generation entirely and crashed with
+        # UnboundLocalError: 'latent_pred' on every request.
+        "retry_badcase_max_times": 1,
         "reference_wav_path": ref_audio,
         "prompt_wav_path": ref_audio if continuation else None,
         "prompt_text": ref_text if continuation else None,

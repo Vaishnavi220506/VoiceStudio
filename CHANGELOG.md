@@ -50,7 +50,12 @@ metadata and the backend fallback mirror it.
 - Linux AppImages include standard update information and a published `.zsync` file so AppImageUpdate and desktop managers can download only changed bytes (#2327) — thanks @shuvashish76!
 
 ### Changed
-- Sidebar keeps its quality slider, adds hardware-aware Auto with live resource usage and TTS-first model selection, and groups compact engine status with icon-based Simple, Models and Details views (#2396)
+- Audio quality and Voice controls now open as compact popovers from the Synthesize box on Clone and Voice Design, replacing the inline section and side pane
+- The Synthesize button shows its keyboard shortcut as key chips inside the button
+- The language menu is more compact and stays within the window instead of clipping at the edges
+- Choose a voice shows photo cards with language and date, Newest/A–Z sorting and search; click or drop an image on any voice avatar to set its photo
+- Sidebar Speed / quality uses labelled Fast, Balanced, Quality and Max choices with a separate Auto toggle, shows engine status words only when something needs attention, and switches Simple, Models and Details views inline; Details shows a compact Engine / Model / Runs on card with a copyable model ID
+- Sidebar adds hardware-aware Auto with live resource usage and TTS-first model selection, and groups compact engine status with icon-based Simple, Models and Details views (#2396)
 
 - LLM setup verifies a model response before enabling features, replaces the misleading engine inventory with connection guidance, and supports authenticated local servers (#2397)
 - LLM skills can use installed coding CLIs through the repair-agent runner, native paid providers through LiteLLM (#2397)
@@ -78,6 +83,8 @@ metadata and the backend fallback mirror it.
 - The Twilio guide and integration directory describe the guided setup and in-app integration pages (#2304)
 
 ### Fixed
+- MLX-Audio OuteTTS generates again, both with a reference clip and with its default voice, instead of failing with an internal error — thanks @debpalash!
+- The language picker offers only the languages each MLX-Audio model supports (Kokoro, CSM, Qwen3-TTS, Dia, Chatterbox, MeloTTS, OuteTTS), per their model cards, instead of every language (#977)
 
 - The Enter that confirms Korean, Japanese or Chinese input no longer also submits project renames, language search, pronunciation, worker or MCP fields (#2338) — thanks @HEOJUNFO!
 - English text normalization speaks a dollar amount followed by a period or comma ("It costs $5.") instead of leaving the digits (#2390) — thanks @kevin9327!
