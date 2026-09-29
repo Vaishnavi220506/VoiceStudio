@@ -15,7 +15,7 @@ import { app, BrowserWindow, dialog, ipcMain, type IpcMainInvokeEvent } from 'el
 import type { BackendSupervisor } from './backend';
 import { startRepairApiBridge, type RepairApiBridge } from './repair-api-bridge';
 import { isTrustedRenderer } from './trusted-renderer';
-import { isAppOperationRequest } from '../shared/repair-request';
+import { agentUsesAppWorkspace, featureGuidance, validateAgentWorkspace } from '../shared/agent-workspace';
 import { sendToLiveWindow } from './window-safety';
 import { startLlmAgentBridge } from './llm-agent-bridge';
 import type {
@@ -619,13 +619,14 @@ export function requestPrompt(
   context: string,
   sourceAttached = true,
 ): string {
+  validateAgentWorkspace(request);
   const task =
     request.report.trim().slice(0, MAX_REPORT) ||
     'Find the current VoiceStudio failure from the supplied diagnostics and recent logs.';
   const session = sourceAttached
     ? `You are the local VoiceStudio repair agent running inside its source checkout.
 Read AGENTS.md first, then CLAUDE.md and CONTEXT.md. Follow repository skills and rules.`
-    : `You are the local VoiceStudio app operator running in a temporary session. No source checkout is attached. Do not search for or edit application source or other user files. Complete only the explicit ACTION_REQUEST through VoiceStudio's app API bridge.`;
+    : `You are VoiceStudio Agent, a local app operator running in a temporary session. No source checkout is attached. Do not search for or edit application source or other user files. Complete the user's current request through VoiceStudio's app API bridge. For missing essential input such as source text, an audio file or a target language, ask a short question instead of inventing input.`;
   const mode = sourceAttached
     ? request.mode === 'fix'
       ? 'Reproduce it, fix the root cause with the smallest cross-platform change, and run targeted tests.'
@@ -650,6 +651,13 @@ VoiceStudio has exposed its currently attached backend through a session-scoped 
 ${appOperationRules}
 ${finish}
 
+## Selected VoiceStudio features
+${request.features?.map(feature => `${feature}: ${featureGuidance[feature]}`).join('\n') || 'Discover available features using GET /openapi.json.'}
+Feature selection supplies task context, not authorization to perform unrelated operations. Never claim a generation or repair succeeded without verifying the output or live state. Keep the conversation concise and readable; report generated project IDs or output paths so later turns can continue the work.
+
+## Previous conversation (context only)
+${JSON.stringify(request.history ?? [])}
+
 ## User report
 ${task}
 
@@ -664,6 +672,7 @@ export async function registerRepairAgents(
   recentMainErrors: () => string = () => '',
 ): Promise<() => void> {
   let child: ChildProcessWithoutNullStreams | null = null;
+  let preparing = false;
   let translationChild: ChildProcessWithoutNullStreams | null = null;
   let translationTemp: string | null = null;
   let promptFile: string | null = null;
@@ -722,7 +731,7 @@ export async function registerRepairAgents(
   });
   ipcMain.handle(REPAIR_CHANNELS.start, async (event, request: RepairAgentRunRequest) => {
     trusted(event, getMainWindow());
-    if (child || translationChild) throw Object.assign(new Error('An agent is already running'), { name: 'AgentRateLimitError' });
+    if (child || translationChild || preparing) throw Object.assign(new Error('An agent is already running'), { name: 'AgentRateLimitError' });
     if (workspaceRoot && !isVoiceStudioCheckout(workspaceRoot)) {
       workspaceRoot = null;
       state = { ...state, workspaceAvailable: false, workspacePath: undefined };
@@ -733,14 +742,16 @@ export async function registerRepairAgents(
       throw new Error('Invalid repair mode');
     if (typeof request.report !== 'string' || typeof request.context !== 'string')
       throw new Error('Invalid repair request');
-    const sourceRoot = workspaceRoot;
-    const appOperationOnly = !sourceRoot && isAppOperationRequest(request.report);
+    validateAgentWorkspace(request);
+    const appOperationOnly = agentUsesAppWorkspace(request, Boolean(workspaceRoot));
+    const sourceRoot = appOperationOnly ? null : workspaceRoot;
     if (!sourceRoot && !appOperationOnly)
       throw new Error('A writable VoiceStudio source checkout is required');
     const command = commands.get(request.agent) ?? locate(request.agent);
     if (!command) throw new Error('That repair agent is not installed');
 
     const sessionId = randomUUID();
+    preparing = true;
     state = {
       ...state,
       sessionId,
@@ -773,6 +784,11 @@ export async function registerRepairAgents(
         await diagnosticContext(supervisor, recentMainErrors),
         Boolean(sourceRoot),
       );
+      if (state.status === 'stopped') {
+        closeRepairBridge(apiBridge);
+        apiBridge = null;
+        return { sessionId };
+      }
       const args = [
         ...command.prefix,
         ...launchArgs(request.agent, request.mode, appOperationOnly, apiBridge.mcpConfigFile),
@@ -831,16 +847,20 @@ export async function registerRepairAgents(
       await apiBridge?.close();
       apiBridge = null;
       child = null;
-      state = { ...state, status: 'failed' };
-      emit({ sessionId, type: 'state', status: 'failed' });
+      const status = state.status === 'stopped' ? 'stopped' : 'failed';
+      state = { ...state, status };
+      emit({ sessionId, type: 'state', status });
+      if (status === 'stopped') return { sessionId };
       throw error;
+    } finally {
+      preparing = false;
     }
   });
   ipcMain.handle(REPAIR_CHANNELS.stop, (event) => {
     trusted(event, getMainWindow());
-    if (!child || !state.sessionId) return state;
+    if ((!child && !preparing) || !state.sessionId) return state;
     const sessionId = state.sessionId;
-    terminateAgentProcess(child);
+    if (child) terminateAgentProcess(child);
     closeRepairBridge(apiBridge);
     apiBridge = null;
     state = { ...state, status: 'stopped' };
@@ -855,7 +875,7 @@ export async function registerRepairAgents(
     timeoutMs = 10 * 60 * 1_000,
   ): Promise<DubAgentTranslationResult> => {
     validateDubTranslationRequest(request);
-    if (child || translationChild) throw Object.assign(new Error('An agent is already running'), { name: 'AgentRateLimitError' });
+    if (child || translationChild || preparing) throw Object.assign(new Error('An agent is already running'), { name: 'AgentRateLimitError' });
     const definition = DEFINITIONS.find((item) => item.id === request.agent)!;
     const command = commands.get(request.agent) ?? locate(definition.command);
     if (!command) throw new Error('That agent is not installed');
@@ -1006,6 +1026,7 @@ export async function registerRepairAgents(
   });
 
   return () => {
+    if (preparing) state = { ...state, status: 'stopped' };
     llmBridge.close();
     delete process.env.VOICESTUDIO_LLM_AGENT_URL;
     delete process.env.VOICESTUDIO_LLM_AGENT_TOKEN;

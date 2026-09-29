@@ -28,7 +28,7 @@ The Google AI default is `gemini-3.8-flash`; the former `gemini-2.0-flash` defau
 has been retired ([Google's deprecation schedule](https://ai.google.dev/gemini-api/docs/deprecations)).
 Explicitly saved model choices remain unchanged.
 
-CLI completions reuse Electron's **Repair with an agent** discovery, process
+CLI completions reuse Electron's **Ask VoiceStudio Agent** discovery, process
 runner, output parser, timeout and shutdown cleanup. They run in a temporary
 directory with restricted tools, without the repair API capability. A private
 loopback bridge lets backend LLM skills call that runner; its credential never

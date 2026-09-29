@@ -144,7 +144,9 @@ describe('packaged app repair sessions', () => {
     const prompt = requestPrompt(request, 'live diagnostics', false);
 
     expect(prompt).toContain('No source checkout is attached');
-    expect(prompt).toContain('Complete only the explicit ACTION_REQUEST');
+    expect(prompt).toContain(
+      "Complete the user's current request through VoiceStudio's app API bridge",
+    );
     expect(prompt).toContain('VOICESTUDIO_REPAIR_CONTEXT_FILE');
     expect(prompt).toContain('Do not ask the user to repeat actions the API can perform');
     expect(prompt).toContain('required model downloads and engine selection');

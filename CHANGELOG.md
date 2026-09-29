@@ -9,6 +9,16 @@ metadata and the backend fallback mirror it.
 ## [Unreleased]
 
 **Highlights**
+- Ask VoiceStudio Agent adds chat, harness selection, feature presets, read-only planning and autopilot app actions without a source checkout (#2407)
+- Home credits contributors with over 10 commits in three responsive rows of round avatars stacked from right to left with an All contributors link, with GitHub and X links on Palash's hover card (#2407)
+- The VoiceStudio.sh Open Source title opens a website preview below the clicked item, within the right content area, with navigation and external-browser controls (#2407)
+- Home cards use feature-specific SVG icons with brief hover and keyboard-focus animations that respect reduced motion (#2407)
+- Renamed the Dub workspace to Dubbing across navigation, project labels, and keyboard shortcuts (#2407)
+- Home prioritizes creation tools with clearer descriptions and controls; the footer can collapse and reopen (#2407)
+- Top bar adds a GitHub Star shortcut beside Get Pro with an exact count refreshed every 20 minutes (#2407)
+- Footer adds one X button with follow cards for @idebpalash and @voicestudiosh plus a compact support-links menu beside Pro (#2407)
+- Enter Studio opens its optional permissions and shortcut settings expanded by default (#2407)
+- Model packs can be selected and installed before preset-compatible engines are active, with changes applied only when installing or using the chosen pack (#2407)
 - Electron is now the only desktop and web UI; the retired Tauri shell and legacy entry points are removed (#2343)
 - Docker and browser deployments now use the same maintained interface as the Electron desktop app (#2341)
 - Manage Projects with confirmed individual and bulk deletion, retry failed items, and keep exported files and render audio (#2333)
@@ -30,7 +40,7 @@ metadata and the backend fallback mirror it.
 - MCP agents can design a voice from a text description and reuse it by `profile_id` (`describe_voice`, `design_voice`) (#2368)
 - Dictation vocabulary hint in Settings → Dictation shortcut: names and jargon that Faster Whisper, MLX Whisper and OpenAI-compatible engines should expect (#2395)
 - Choose 16/24/32-bit WAV precision, sampling effort and mastering in Clone and Design, with file sizes and optional audio checks (#2406)
-
+- Language selection adds searchable flags, native names and codes in a responsive virtual grid, with supported model languages first and accessible keyboard navigation (#2408)
 - Run local narration, transcription, translation and voice-conversion recipes with resumable steps and WAV/TXT exports (#2333)
 - Workflows Condition step: route each script or clip down a yes/no branch by whether its text contains, equals, starts with or ends with a phrase — branches may rejoin, and each item picks its own route in the same run — thanks @shivsin25!
 
@@ -40,11 +50,11 @@ metadata and the backend fallback mirror it.
 - Linux AppImages include standard update information and a published `.zsync` file so AppImageUpdate and desktop managers can download only changed bytes (#2327) — thanks @shuvashish76!
 
 ### Changed
+- Sidebar keeps its quality slider, adds hardware-aware Auto with live resource usage and TTS-first model selection, and groups compact engine status with icon-based Simple, Models and Details views (#2396)
 
 - LLM setup verifies a model response before enabling features, replaces the misleading engine inventory with connection guidance, and supports authenticated local servers (#2397)
 - LLM skills can use installed coding CLIs through the repair-agent runner, native paid providers through LiteLLM (#2397)
 - Dubbing supports Google Cloud Translation and Amazon Translate with explicit provider setup (#2397)
-- Sidebar keeps its quality slider, adds hardware-aware Auto with live resource usage and TTS-first model selection, and groups compact engine status with icon-based Simple, Models and Details views (#2396)
 - OmniVoice sidecars reuse installed speech recognition for short references without transcripts, matching in-process cloning (#2320)
 - Electron recovers from OS-denied default backend ports without changing explicitly configured ports (#2358) — thanks @rishi2288!
 - Home opens directly on project actions, and Integrations lists only connectors with completed in-app setup (#2351)
@@ -63,6 +73,7 @@ metadata and the backend fallback mirror it.
 ### Docs
 
 - Record the supplied audio comparisons and installed-engine quality validation (#2406)
+
 - New call agent guide covering setup, disclosure, recording consent and safeguards (#2306)
 - The Twilio guide and integration directory describe the guided setup and in-app integration pages (#2304)
 
@@ -73,8 +84,12 @@ metadata and the backend fallback mirror it.
 - Voice Design sends your written description unchanged to engines that read free text, such as Qwen3-TTS VoiceDesign and VoxCPM2, instead of reducing it to OmniVoice tags (#2389) — thanks @dominikj-cf!
 - Voice Design keeps a detail you pick when you edit the description, unless the new text says otherwise, and reopening a take restores the description and picks it was made with (#2389)
 - A snapshot interrupted mid-copy (crash, kill or power loss) is no longer listed as a database backup or counted toward the three kept; the leftover partial file is cleaned up on the next snapshot (#2402) — thanks @fadiroot!
-- Preserve float audio and requested seeds through OmniVoice/VoxCPM2 sidecars, and keep playback and saved WAV precision consistent (#2406)
+- Low-disk notifications open Storage settings directly (#2407)
 
+- Preserve float audio and requested seeds through OmniVoice/VoxCPM2 sidecars, and keep playback and saved WAV precision consistent (#2406)
+- Development launches rebuild main and preload changes so embedded website previews do not keep stale browser IPC after UI updates (#2407)
+
+- Dubbing reports damaged source files clearly and removes partial or failed copies when storage runs out (#2411)
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
