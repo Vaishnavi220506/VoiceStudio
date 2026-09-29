@@ -246,17 +246,18 @@ export const createStreamingChunkPlayer = ({ label, sampleRate, crossfadeMs = 0,
     gain.connect(ctx.destination);
 
     const when = anchor + (starts[i] + intra - baseOffset);
-    const fade = withFade && intra === 0 ? fadeFor(i) : 0;
+    const startAt = Math.max(when, ctx.currentTime);
     const tail = scheduled[scheduled.length - 1];
+    const fade = withFade && intra === 0 && tail?.endsAt > startAt ? fadeFor(i) : 0;
     if (fade > 0 && tail) {
       // Linear crossfade — same shape the backend bakes into the final file.
-      tail.gain.gain.setValueAtTime(1, when);
-      tail.gain.gain.linearRampToValueAtTime(0, when + fade);
-      gain.gain.setValueAtTime(0, when);
-      gain.gain.linearRampToValueAtTime(1, when + fade);
+      tail.gain.gain.setValueAtTime(1, startAt);
+      tail.gain.gain.linearRampToValueAtTime(0, startAt + fade);
+      gain.gain.setValueAtTime(0, startAt);
+      gain.gain.linearRampToValueAtTime(1, startAt + fade);
     }
-    src.start(Math.max(when, ctx.currentTime), intra);
-    scheduled.push({ src, gain, index: i });
+    src.start(startAt, intra);
+    scheduled.push({ src, gain, index: i, endsAt: startAt + dur(i) - intra });
   };
 
   const session = claimTrackedPlayback({

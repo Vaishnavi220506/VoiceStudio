@@ -608,6 +608,29 @@ describe('createStreamingChunkPlayer', () => {
     }
   });
 
+  it('keeps the opening audio when a late chunk follows an ended source', () => {
+    const ramp = vi.spyOn(FakeGainParam.prototype, 'linearRampToValueAtTime');
+    const player = createStreamingChunkPlayer({
+      label: 'x',
+      sampleRate: 24000,
+      crossfadeMs: 50,
+    });
+    try {
+      const ctx = FakeAudioContext.instances[0];
+      player.appendPcm16Base64(chunkEvent(0).pcm);
+
+      // The first 100 ms source was scheduled from 80 ms to 180 ms.
+      ctx.currentTime = 0.25;
+      player.appendPcm16Base64(chunkEvent(1).pcm);
+
+      expect(ctx.started[1].startedAt.when).toBeCloseTo(0.27, 5);
+      expect(ramp).not.toHaveBeenCalled();
+    } finally {
+      player.fail();
+      ramp.mockRestore();
+    }
+  });
+
   it('supports seek within the buffered region (reschedules from the target)', () => {
     const player = createStreamingChunkPlayer({
       label: 'x',
