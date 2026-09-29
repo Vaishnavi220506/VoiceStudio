@@ -12,7 +12,12 @@ import { openTake, useSelectedTake } from '@/lib/store/takes';
 import {
   DESIGN_DRAFT_EVENT,
   STORAGE,
+  applyDescription,
+  designInstruct,
+  designRecipe,
+  pickDetail,
   readDraft,
+  replaceRecipe,
   restoreDesignProfile,
   type DesignDraft,
 } from './design-draft';
@@ -51,11 +56,7 @@ import { cn } from '@/lib/utils';
 import { cloneSettingsStore } from '@/lib/store/clone-settings';
 import type { Profile } from '@/lib/api/types';
 import { CATEGORIES, PRESETS } from '@shared/utils/constants';
-import {
-  applyVdState,
-  buildDesignInstruct,
-  mergeDescribedAttrs,
-} from '@shared/utils/voiceInstruct';
+import { buildDesignInstruct, mergeDescribedAttrs } from '@shared/utils/voiceInstruct';
 import { pickDesignSeed } from '@shared/utils/seed';
 export function DesignPage() {
   const { t } = useTranslation();
@@ -64,14 +65,21 @@ export function DesignPage() {
   const [name, setName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [productionOpen, setProductionOpen] = useState(false);
-  const [description, setDescription] = useState('');
   const [startingOpen, setStartingOpen] = useState(true);
-  const mapper = useDescription((attrs) =>
-    setDraft((current) => ({ ...current, attrs: mergeDescribedAttrs(attrs) })),
+  const mapper = useDescription((mapped, described) =>
+    // A mapping that lands after the description changed (edited, or the
+    // recipe was replaced from another view) no longer describes this voice.
+    setDraft((current) =>
+      current.description.trim() === described
+        ? applyDescription(current, mapped, described)
+        : current,
+    ),
   );
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const generation = useGenerateClone();
+  const freeform = generation.instructVocabulary === 'freeform';
+  const description = draft.description;
   const client = useQueryClient();
   const profiles = useProfiles();
   const savedProfilesRef = useRef<HTMLDetailsElement>(null);
@@ -99,19 +107,13 @@ export function DesignPage() {
     return () => clearTimeout(timer);
   }, [draft]);
   const change = (category: string, value: string) => {
-    mapper.cancel();
-    const changed = applyVdState(draft.attrs, category, value);
-    setDraft((current) => ({
-      ...current,
-      attrs:
-        current.attrs === draft.attrs
-          ? changed.vdStates
-          : applyVdState(current.attrs, category, value).vdStates,
-    }));
-    if (changed.clearedCategory) {
+    // No mapper.cancel(): a mapping still in flight lands under this pick.
+    const { clearedCategory } = pickDetail(draft, category, value);
+    setDraft((current) => pickDetail(current, category, value).draft);
+    if (clearedCategory) {
       toast(
         t('clone.vd_exclusive_cleared', {
-          cleared: t(`clone.cat_${changed.clearedCategory}`),
+          cleared: t(`clone.cat_${clearedCategory}`),
         }),
       );
     }
@@ -190,7 +192,11 @@ export function DesignPage() {
                   variant="ghost"
                   size="xs"
                   disabled={generation.isGenerating || mapper.pending}
-                  onClick={() => mapper.reset(description)}
+                  onClick={() => {
+                    // Reset drops the picks so the description alone decides again.
+                    setDraft((current) => ({ ...current, picks: {} }));
+                    mapper.reset(description);
+                  }}
                 >
                   <RotateCcwIcon />
                   {t('clone.reset_to_description')}
@@ -205,22 +211,27 @@ export function DesignPage() {
               value={description}
               placeholder={t('clone.describe_placeholder')}
               onChange={(event) => {
-                setDescription(event.target.value);
-                mapper.describe(event.target.value);
+                const value = event.target.value;
+                setDraft((current) => ({ ...current, description: value }));
+                // Mapping runs for every engine so the details stay in step
+                // with the description when switching back to OmniVoice.
+                mapper.describe(value);
               }}
             />
             <p role="status" className="text-xs text-muted-foreground">
-              {mapper.pending
-                ? t('preferences.loading')
-                : !mapper.matched
-                  ? t('clone.describe_no_match')
-                  : mapper.unmatched.length
-                    ? t('clone.describe_unmatched', {
-                        items: mapper.unmatched.join(', '),
-                      })
-                    : t('clone.describe_hint')}
+              {freeform
+                ? t('clone.describe_freeform')
+                : mapper.pending
+                  ? t('preferences.loading')
+                  : !mapper.matched
+                    ? t('clone.describe_no_match')
+                    : mapper.unmatched.length
+                      ? t('clone.describe_unmatched', {
+                          items: mapper.unmatched.join(', '),
+                        })
+                      : t('clone.describe_hint')}
             </p>
-            {mapper.failed && (
+            {!freeform && mapper.failed && (
               <Button variant="ghost" size="xs" onClick={() => mapper.describe(description)}>
                 {t('backend.retry')}
               </Button>
@@ -246,12 +257,13 @@ export function DesignPage() {
                     onClick={() => {
                       mapper.cancel();
                       const restored = restoreDesignProfile(profile, draft.seed);
-                      setDraft((current) => ({
-                        ...current,
-                        attrs: restored.attrs,
-                        seed: restored.seed,
-                        profileId: restored.profileId,
-                      }));
+                      setDraft((current) =>
+                        replaceRecipe(current, {
+                          attrs: restored.attrs,
+                          seed: restored.seed,
+                          profileId: restored.profileId,
+                        }),
+                      );
                       setCloneSetting('language', restored.language);
                     }}
                   >
@@ -303,10 +315,9 @@ export function DesignPage() {
                 attrs={draft.attrs}
                 onSelect={(attrs) => {
                   mapper.cancel();
-                  setDraft((current) => ({
-                    ...current,
-                    attrs: mergeDescribedAttrs(attrs),
-                  }));
+                  setDraft((current) =>
+                    replaceRecipe(current, { attrs: mergeDescribedAttrs(attrs) }),
+                  );
                 }}
               />
               <div className="flex flex-wrap gap-1">
@@ -318,10 +329,9 @@ export function DesignPage() {
                     disabled={generation.isGenerating}
                     onClick={() => {
                       mapper.cancel();
-                      setDraft((current) => ({
-                        ...current,
-                        attrs: mergeDescribedAttrs(preset.attrs),
-                      }));
+                      setDraft((current) =>
+                        replaceRecipe(current, { attrs: mergeDescribedAttrs(preset.attrs) }),
+                      );
                     }}
                   >
                     {t('clone.preset_' + preset.id)
@@ -468,11 +478,12 @@ export function DesignPage() {
               disabled={generation.isGenerating}
               onUse={(preset) => {
                 mapper.cancel();
-                setDraft((current) => ({
-                  ...current,
-                  text: preset.script || current.text,
-                  attrs: mergeDescribedAttrs(preset.attrs),
-                }));
+                setDraft((current) =>
+                  replaceRecipe(current, {
+                    text: preset.script || current.text,
+                    attrs: mergeDescribedAttrs(preset.attrs),
+                  }),
+                );
                 setCloneSetting('language', preset.language || 'Auto');
               }}
             />
@@ -540,13 +551,19 @@ export function DesignPage() {
               <div className="flex w-64 justify-end gap-2 justify-self-end">
                 <Button
                   className="h-10 w-52 shrink-0 overflow-hidden rounded-lg px-4"
-                  disabled={!draft.text.trim() || mapper.pending || !generation.canGenerateDesign}
+                  disabled={
+                    !draft.text.trim() ||
+                    // Free-form engines take the description itself, not its mapping.
+                    (!freeform && mapper.pending) ||
+                    !generation.canGenerateDesign
+                  }
                   aria-busy={generation.isGenerating}
                   aria-label={generationLabel}
                   onClick={() =>
                     void generation.generateDesign({
                       text: draft.text,
-                      instruct: buildDesignInstruct(draft.attrs, '').instruct,
+                      instruct: designInstruct(draft, generation.instructVocabulary),
+                      recipe: designRecipe(draft),
                       seed: draft.seed,
                       profileId: profiles.data?.some(
                         (profile) => profile.id === draft.profileId && profile.kind === 'design',
