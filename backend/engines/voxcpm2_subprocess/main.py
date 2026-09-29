@@ -125,7 +125,9 @@ def _load_model(stdout):
 
         checkpoint = os.environ.get("OMNIVOICE_VOXCPM_MODEL", "openbmb/VoxCPM2")
         _MODEL = _with_retries(
-            lambda: VoxCPM.from_pretrained(checkpoint, load_denoiser=False)
+            lambda: VoxCPM.from_pretrained(
+                checkpoint, load_denoiser=False, optimize=False
+            )
         )
     finally:
         stop.set()
@@ -197,10 +199,22 @@ def generation_kwargs(text: str, **options) -> dict:
     control = " ".join(control.replace("(", " ").replace(")", " ").split())
     ref_text = (options.get("ref_text") or "").strip()
     continuation = bool(ref_audio and ref_text and not control)
+    # Bound work per request. VoxCPM's upstream defaults allow 4096 tokens
+    # and bad-case retries, which can make a single desktop request run for
+    # many minutes. Keep short utterances responsive and cap long inputs.
+    max_len = min(2048, max(128, len(text) * 3))
+    try:
+        inference_timesteps = int(options.get("num_step", 4))
+    except (TypeError, ValueError):
+        inference_timesteps = 4
+    inference_timesteps = min(30, max(1, inference_timesteps))
     return {
         "text": f"({control}){text}" if control else text,
         "cfg_value": options.get("guidance_scale", 2.0),
-        "inference_timesteps": options.get("num_step", 10),
+        "max_len": max_len,
+        "inference_timesteps": inference_timesteps,
+        "retry_badcase": False,
+        "retry_badcase_max_times": 0,
         "reference_wav_path": ref_audio,
         "prompt_wav_path": ref_audio if continuation else None,
         "prompt_text": ref_text if continuation else None,
