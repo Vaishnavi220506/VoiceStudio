@@ -2014,7 +2014,9 @@
     "mode_label": "Modalità dettatura",
     "mode_sub": "Alterna: premere una volta per avviare, un'altra per interrompere. Tieni premuto: detta mentre si tiene premuto il tasto.",
     "mode_toggle": "Attiva/disattiva",
-    "mode_hold": "Tieni"
+    "mode_hold": "Tieni",
+    "prompt_label": "Suggerimento lessicale",
+    "prompt_sub": "Nomi, gergo e grafie attesi durante la dettatura. Usato da Faster Whisper, MLX Whisper e dai motori compatibili con OpenAI (inviato a quel server insieme all’audio); gli altri motori lo ignorano."
   },
   "trimmer": {
     "title": "Taglia l'audio di riferimento",

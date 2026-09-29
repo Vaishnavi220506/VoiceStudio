@@ -2012,7 +2012,9 @@
     "mode_label": "Diktiermodus",
     "mode_sub": "Umschalten: Einmal drücken, um zu starten, erneut drücken, um zu stoppen. Halten: Diktieren, während die Taste gedrückt gehalten wird.",
     "mode_toggle": "Umschalten",
-    "mode_hold": "Halt"
+    "mode_hold": "Halt",
+    "prompt_label": "Vokabelhinweis",
+    "prompt_sub": "Beim Diktieren erwartete Namen, Fachbegriffe und Schreibweisen. Wird von Faster Whisper, MLX Whisper und OpenAI-kompatiblen Engines genutzt (zusammen mit dem Audio an diesen Server gesendet); andere Engines ignorieren ihn."
   },
   "trimmer": {
     "title": "Referenzaudio zuschneiden",

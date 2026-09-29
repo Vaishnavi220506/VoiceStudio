@@ -2016,7 +2016,9 @@
     "mode_label": "Tryb dyktowania",
     "mode_sub": "Przełącz: naciśnij raz, aby rozpocząć, ponownie, aby zatrzymać. Przytrzymaj: dyktuj, gdy klawisz jest przytrzymywany.",
     "mode_toggle": "Przełącz",
-    "mode_hold": "Trzymaj"
+    "mode_hold": "Trzymaj",
+    "prompt_label": "Podpowiedź słownictwa",
+    "prompt_sub": "Nazwy, żargon i pisownia oczekiwane podczas dyktowania. Używana przez Faster Whisper, MLX Whisper i silniki zgodne z OpenAI (wysyłana na ten serwer razem z dźwiękiem); pozostałe silniki ją ignorują."
   },
   "trimmer": {
     "title": "Przytnij dźwięk referencyjny",

@@ -2086,7 +2086,9 @@
     "mode_label": "Dictation Mode",
     "mode_sub": "Toggle: press once to start, again to stop. Hold: dictate while the key is held.",
     "mode_toggle": "Toggle",
-    "mode_hold": "Hold"
+    "mode_hold": "Hold",
+    "prompt_label": "Vocabulary hint",
+    "prompt_sub": "Names, jargon and spellings to expect while dictating. Used by Faster Whisper, MLX Whisper and OpenAI-compatible engines (sent to that server with the audio); other engines ignore it."
   },
   "trimmer": {
     "title": "Trim reference audio",

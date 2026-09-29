@@ -2014,7 +2014,9 @@
     "mode_label": "Modo de ditado",
     "mode_sub": "Alternar: pressione uma vez para iniciar, novamente para parar. Hold: dita enquanto a tecla é pressionada.",
     "mode_toggle": "Alternar",
-    "mode_hold": "Espera"
+    "mode_hold": "Espera",
+    "prompt_label": "Dica de vocabulário",
+    "prompt_sub": "Nomes, jargões e grafias esperados ao ditar. Usado pelo Faster Whisper, MLX Whisper e mecanismos compatíveis com OpenAI (enviado a esse servidor junto com o áudio); os demais mecanismos o ignoram."
   },
   "trimmer": {
     "title": "Cortar áudio de referência",

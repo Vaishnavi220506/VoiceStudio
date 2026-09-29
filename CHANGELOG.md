@@ -28,6 +28,7 @@ metadata and the backend fallback mirror it.
 ### Added
 
 - MCP agents can design a voice from a text description and reuse it by `profile_id` (`describe_voice`, `design_voice`) (#2368)
+- Dictation vocabulary hint in Settings → Dictation shortcut: names and jargon that Faster Whisper, MLX Whisper and OpenAI-compatible engines should expect (#2395)
 - Run local narration, transcription, translation and voice-conversion recipes with resumable steps and WAV/TXT exports (#2333)
 - Workflows Condition step: route each script or clip down a yes/no branch by whether its text contains, equals, starts with or ends with a phrase — branches may rejoin, and each item picks its own route in the same run — thanks @shivsin25!
 
