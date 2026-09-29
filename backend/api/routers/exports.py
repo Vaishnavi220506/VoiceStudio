@@ -109,7 +109,7 @@ def export_file(req: ExportRequest):
     return {"success": True, "id": export_id}
 
 
-@router.post("/export/record")
+@router.post("/export/record", dependencies=[Depends(require_loopback)])
 def record_export(req: ExportRecordRequest):
     export_id = str(uuid.uuid4())[:8]
     with db_conn() as conn:
@@ -130,7 +130,7 @@ def delete_export_history(export_id: str):
     return {"deleted": export_id}
 
 
-@router.get("/export/history")
+@router.get("/export/history", dependencies=[Depends(require_loopback)])
 def get_export_history():
     with db_conn() as conn:
         rows = conn.execute("SELECT * FROM export_history ORDER BY created_at DESC LIMIT 50").fetchall()
