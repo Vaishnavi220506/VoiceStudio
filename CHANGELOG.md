@@ -91,6 +91,7 @@ metadata and the backend fallback mirror it.
 
 - Dubbing reports damaged source files clearly and removes partial or failed copies when storage runs out (#2411)
 - Streaming previews keep audio edges intact, preserve crossfades for late chunks, and use the PCM rate when supported (#2399) — thanks @Marcin-CCC!
+- Installed performance packs can be activated when all required models are present, even below the download-space reserve (#2386)
 - macOS development launches use the maintained Electron version and icon paths (#2351)
 - Electron detects and repairs incomplete PyTorch, torchaudio and torchvision runtime wheels before backend startup (#2354) — thanks @jonathanmoronta1-lab!
 - Returning to local mode discards sessions from unsaved remote-backend connection tests (#2356)
